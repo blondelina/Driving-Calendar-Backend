@@ -1,0 +1,14 @@
+D:\Proiect Colectiv-BackEnd\ApplicationBackend\InfrastructureAPP\bin\Debug\net6.0\InfrastructureAPP.deps.json
+D:\Proiect Colectiv-BackEnd\ApplicationBackend\InfrastructureAPP\bin\Debug\net6.0\InfrastructureAPP.runtimeconfig.json
+D:\Proiect Colectiv-BackEnd\ApplicationBackend\InfrastructureAPP\bin\Debug\net6.0\InfrastructureAPP.dll
+D:\Proiect Colectiv-BackEnd\ApplicationBackend\InfrastructureAPP\bin\Debug\net6.0\InfrastructureAPP.pdb
+D:\Proiect Colectiv-BackEnd\ApplicationBackend\InfrastructureAPP\obj\Debug\net6.0\InfrastructureAPP.csproj.AssemblyReference.cache
+D:\Proiect Colectiv-BackEnd\ApplicationBackend\InfrastructureAPP\obj\Debug\net6.0\InfrastructureAPP.GeneratedMSBuildEditorConfig.editorconfig
+D:\Proiect Colectiv-BackEnd\ApplicationBackend\InfrastructureAPP\obj\Debug\net6.0\InfrastructureAPP.AssemblyInfoInputs.cache
+D:\Proiect Colectiv-BackEnd\ApplicationBackend\InfrastructureAPP\obj\Debug\net6.0\InfrastructureAPP.AssemblyInfo.cs
+D:\Proiect Colectiv-BackEnd\ApplicationBackend\InfrastructureAPP\obj\Debug\net6.0\InfrastructureAPP.csproj.CoreCompileInputs.cache
+D:\Proiect Colectiv-BackEnd\ApplicationBackend\InfrastructureAPP\obj\Debug\net6.0\InfrastructureAPP.dll
+D:\Proiect Colectiv-BackEnd\ApplicationBackend\InfrastructureAPP\obj\Debug\net6.0\refint\InfrastructureAPP.dll
+D:\Proiect Colectiv-BackEnd\ApplicationBackend\InfrastructureAPP\obj\Debug\net6.0\InfrastructureAPP.pdb
+D:\Proiect Colectiv-BackEnd\ApplicationBackend\InfrastructureAPP\obj\Debug\net6.0\InfrastructureAPP.genruntimeconfig.cache
+D:\Proiect Colectiv-BackEnd\ApplicationBackend\InfrastructureAPP\obj\Debug\net6.0\ref\InfrastructureAPP.dll
