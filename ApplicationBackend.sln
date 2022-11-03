@@ -3,13 +3,20 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationBackend", "ApplicationBackend\ApplicationBackend.csproj", "{9AED3799-2CFF-48B1-90B0-B9CBC8A99FBC}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2368D475-306B-4AD8-A0A8-4167B756291C}"
+	ProjectSection(SolutionItems) = preProject
+		setup\docker-compose-infrastructure-setup.yaml = setup\docker-compose-infrastructure-setup.yaml
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfrastructureAPP", "InfrastructureAPP\InfrastructureAPP.csproj", "{06D47F78-774B-4A6C-AC9B-C60FFA7695C1}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{12C99254-D64C-421A-86C5-901B6573C6C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessAPP", "BusinessAPP\BusinessAPP.csproj", "{9F6E05EF-C691-4B86-BA3A-D8D1B2ACF133}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrivingCalendar.API.Host", "src\DrivingCalendar.API.Host\DrivingCalendar.API.Host.csproj", "{1D2EA06C-C8E9-4BC1-8047-41A7CADB3377}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIs", "APIs\APIs.csproj", "{497C9E8B-296E-4BAF-AEC5-6322C7528F98}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrivingCalendar.API", "src\DrivingCalendar.API\DrivingCalendar.API.csproj", "{0B785FB9-FB37-40A2-A606-6B83E7CFE9E4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrivingCalendar.Business", "src\DrivingCalendar.Business\DrivingCalendar.Business.csproj", "{9F65E3C5-2EC6-4E49-8054-07744B76468C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrivingCalendar.Infrastructure", "src\DrivingCalendar.Infrastructure\DrivingCalendar.Infrastructure.csproj", "{0FBE7FAF-4D60-4565-A6CF-7387224DC5FF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,25 +24,30 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9AED3799-2CFF-48B1-90B0-B9CBC8A99FBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9AED3799-2CFF-48B1-90B0-B9CBC8A99FBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9AED3799-2CFF-48B1-90B0-B9CBC8A99FBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9AED3799-2CFF-48B1-90B0-B9CBC8A99FBC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{06D47F78-774B-4A6C-AC9B-C60FFA7695C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{06D47F78-774B-4A6C-AC9B-C60FFA7695C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{06D47F78-774B-4A6C-AC9B-C60FFA7695C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{06D47F78-774B-4A6C-AC9B-C60FFA7695C1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9F6E05EF-C691-4B86-BA3A-D8D1B2ACF133}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9F6E05EF-C691-4B86-BA3A-D8D1B2ACF133}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9F6E05EF-C691-4B86-BA3A-D8D1B2ACF133}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9F6E05EF-C691-4B86-BA3A-D8D1B2ACF133}.Release|Any CPU.Build.0 = Release|Any CPU
-		{497C9E8B-296E-4BAF-AEC5-6322C7528F98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{497C9E8B-296E-4BAF-AEC5-6322C7528F98}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{497C9E8B-296E-4BAF-AEC5-6322C7528F98}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{497C9E8B-296E-4BAF-AEC5-6322C7528F98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D2EA06C-C8E9-4BC1-8047-41A7CADB3377}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D2EA06C-C8E9-4BC1-8047-41A7CADB3377}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D2EA06C-C8E9-4BC1-8047-41A7CADB3377}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D2EA06C-C8E9-4BC1-8047-41A7CADB3377}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B785FB9-FB37-40A2-A606-6B83E7CFE9E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B785FB9-FB37-40A2-A606-6B83E7CFE9E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B785FB9-FB37-40A2-A606-6B83E7CFE9E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B785FB9-FB37-40A2-A606-6B83E7CFE9E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F65E3C5-2EC6-4E49-8054-07744B76468C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F65E3C5-2EC6-4E49-8054-07744B76468C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F65E3C5-2EC6-4E49-8054-07744B76468C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F65E3C5-2EC6-4E49-8054-07744B76468C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FBE7FAF-4D60-4565-A6CF-7387224DC5FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FBE7FAF-4D60-4565-A6CF-7387224DC5FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FBE7FAF-4D60-4565-A6CF-7387224DC5FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FBE7FAF-4D60-4565-A6CF-7387224DC5FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0B785FB9-FB37-40A2-A606-6B83E7CFE9E4} = {12C99254-D64C-421A-86C5-901B6573C6C8}
+		{9F65E3C5-2EC6-4E49-8054-07744B76468C} = {12C99254-D64C-421A-86C5-901B6573C6C8}
+		{0FBE7FAF-4D60-4565-A6CF-7387224DC5FF} = {12C99254-D64C-421A-86C5-901B6573C6C8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4B95FB42-FF6C-4CB6-9569-A22960103B1F}
