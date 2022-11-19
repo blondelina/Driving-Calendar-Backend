@@ -1,4 +1,6 @@
 ﻿using DrivingCalendar.Business;
+using DrivingCalendar.Business.Abstractions.Repositories;
+using DrivingCalendar.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -13,6 +15,8 @@ namespace DrivingCalendar.Infrastructure
             string connectionString)
         {
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+
+            builder.Services.AddTransient<IDrivingLessonsRepository, DrivingLessonRepository>();
 
             return builder;
         }

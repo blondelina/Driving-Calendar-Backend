@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DrivingCalendar.Infrastructure.Entities
 {
     [Table("DrivingInstructors")]
-    public class DrivingInstructor
+    public class DrivingInstructorEntity
     {
         [Key]
         public int Id { get; set; }
