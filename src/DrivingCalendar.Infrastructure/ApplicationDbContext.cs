@@ -8,6 +8,7 @@ namespace DrivingCalendar.Infrastructure
         public DbSet<DrivingInstructorEntity> DrivingInstructors { get; set; }
         public DbSet<BaseUserEntity> BaseUsers { get; set; }
         public DbSet<DrivingLessonEntity> DrivingLessons { get; set; }
+        public DbSet<AvailabilityEntity> Availabilities { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
