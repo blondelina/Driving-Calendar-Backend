@@ -7,7 +7,7 @@ namespace DrivingCalendar.Business.Service
 {
     internal class DrivingLessonService : IDrivingLessonService
     {
-        private IDrivingLessonsRepository _drivingLessonsRepository;
+        private readonly IDrivingLessonsRepository _drivingLessonsRepository;
 
         public DrivingLessonService(IDrivingLessonsRepository drivingLessonsRepository)
         {

@@ -1,44 +1,40 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DrivingCalendar.API.Models;
+using DrivingCalendar.Business.Abstractions.Services;
+using DrivingCalendar.Business.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 
 namespace DrivingCalendar.API.Host
 {
 
-    [Route("api/[controller]")]
+    [Route("api")]
     [ApiController]
     public class AvailabilityController : ControllerBase
     {
 
-        // GET: api/<ValuesController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        private readonly IAvailabityService _availabityService;
 
-        // GET api/<ValuesController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        public AvailabilityController(IAvailabityService availabityService)
         {
-            return "value";
+            _availabityService= availabityService ;
         }
-
-        // POST api/<ValuesController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+        
+        [HttpPost("users/{userId}/availabilities")]
+        public async Task<IActionResult> Create([FromBody][Required] CreateAvailabilityRequest createAvailabilityRequest, [FromRoute][Required] int userId)
         {
-        }
+            CreateAvailability createAvailability = new()
+            {
+                UserId = userId,
+                StartDate = createAvailabilityRequest.StartDate,
+                EndDate = createAvailabilityRequest.EndDate,
+            };
 
-        // PUT api/<ValuesController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+            IList<int> ids = await _availabityService.CreateAvailabilityAsync(createAvailability, createAvailabilityRequest.Repeat);
 
-        // DELETE api/<ValuesController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            return new ObjectResult(ids) { StatusCode = StatusCodes.Status201Created };
         }
     }
 }

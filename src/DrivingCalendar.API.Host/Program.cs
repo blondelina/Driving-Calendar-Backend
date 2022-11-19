@@ -13,6 +13,8 @@ namespace DrivingCalendar.API.Host
 
             WebApplication app = builder.Build();
             await startup.Configure(app);
+
+            app.Run();
         }
     }
 }

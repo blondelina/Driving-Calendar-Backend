@@ -1,4 +1,5 @@
 ﻿using DrivingCalendar.API.Host.Extensions;
+using DrivingCalendar.API.Host.Filters;
 using DrivingCalendar.API.Host.Settings;
 using DrivingCalendar.Business;
 using DrivingCalendar.Infrastructure;
@@ -22,7 +23,10 @@ namespace DrivingCalendar.API.Host
         {
             ApplicationSettings settings = _configuration.Get<ApplicationSettings>();
 
-            services.AddControllers();
+            services.AddControllers(options =>
+            {
+                options.Filters.Add<HttpResponseExceptionFilter>();
+            });
 
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
@@ -49,8 +53,6 @@ namespace DrivingCalendar.API.Host
             app.UseAuthorization();
 
             app.MapControllers();
-
-            app.Run();
         }
     }
 }

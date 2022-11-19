@@ -41,7 +41,7 @@ namespace DrivingCalendar.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Availabilities");
+                    b.ToTable("Availabilities", (string)null);
                 });
 
             modelBuilder.Entity("DrivingCalendar.Infrastructure.Entities.BaseUserEntity", b =>
@@ -70,7 +70,7 @@ namespace DrivingCalendar.Infrastructure.Migrations
                         .IsUnique()
                         .HasFilter("[Username] IS NOT NULL");
 
-                    b.ToTable("BaseUser");
+                    b.ToTable("BaseUser", (string)null);
                 });
 
             modelBuilder.Entity("DrivingCalendar.Infrastructure.Entities.DrivingInstructorEntity", b =>
@@ -90,7 +90,7 @@ namespace DrivingCalendar.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DrivingInstructors");
+                    b.ToTable("DrivingInstructors", (string)null);
                 });
 
             modelBuilder.Entity("DrivingCalendar.Infrastructure.Entities.DrivingLessonEntity", b =>
@@ -121,7 +121,7 @@ namespace DrivingCalendar.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DrivingLesson");
+                    b.ToTable("DrivingLesson", (string)null);
                 });
 #pragma warning restore 612, 618
         }

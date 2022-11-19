@@ -17,6 +17,7 @@ namespace DrivingCalendar.Infrastructure
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
             builder.Services.AddTransient<IDrivingLessonsRepository, DrivingLessonRepository>();
+            builder.Services.AddTransient<IAvailabilityRepository, AvailabilityRepository>();
 
             return builder;
         }
