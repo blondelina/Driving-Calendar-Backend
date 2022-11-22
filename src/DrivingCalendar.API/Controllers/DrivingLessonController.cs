@@ -3,12 +3,13 @@ using System.Threading.Tasks;
 using DrivingCalendar.Business.Abstractions.Services;
 using DrivingCalendar.Business.Models;
 using Microsoft.AspNetCore.Authorization;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using System.ComponentModel.DataAnnotations;
+using DrivingCalendar.API.Models;
+using DrivingCalendar.Business.Constants;
 
 namespace DrivingCalendar.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api")]
     [ApiController]
     [Authorize]
     public class DrivingLessonController : ControllerBase
@@ -21,12 +22,29 @@ namespace DrivingCalendar.API.Controllers
         }
 
         // GET: api/<ValuesController>
-        [HttpGet("{drivingLessonId}")]
+        [HttpGet("driving-lessons/{drivingLessonId}")]
 
         public async Task<ActionResult<DrivingLesson>> GetById([FromRoute] int drivingLessonId)
         {
             DrivingLesson drivingLesson = await _drivingLessonService.GetByIdAsync(drivingLessonId);
             return drivingLesson is not null ? drivingLesson : NotFound();
+        }
+
+        [HttpPost("instructors/{instructorId}/driving-lessons")]
+        [Authorize(Roles = IdentityRoles.INSTRUCTOR)]
+        public async Task<IActionResult> CreateByInstructor([FromBody][Required] CreateDrivingLessonInstructorRequest instructorRequest, [FromRoute][Required] int instructorId)
+        {
+            CreateDrivingLesson createDrivingLesson = new()
+            {
+                StudentId = instructorRequest.StudentId,
+                InstructorId = instructorId,
+                StartDate = instructorRequest.StartDate,
+                EndDate = instructorRequest.EndDate,
+
+            };
+
+            return new ObjectResult(await _drivingLessonService.CreateDrivingLessonByInstructor(createDrivingLesson));
+
         }
     }
 }

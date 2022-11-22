@@ -20,7 +20,7 @@ namespace DrivingCalendar.Infrastructure.Entities
 
         public DateTime StartDate { get; set; }
 
-        public DateTime EndTime { get; set; }
+        public DateTime EndDate { get; set; }
 
         public DrivingLessonStatus StudentStatus { get; set; }
 

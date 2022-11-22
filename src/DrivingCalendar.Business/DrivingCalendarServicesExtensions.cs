@@ -1,8 +1,7 @@
 ﻿using DrivingCalendar.Business.Abstractions.Services;
-using DrivingCalendar.Business.Service;
+using DrivingCalendar.Business.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using DrivingCalendar.Business.Services;
 
 namespace DrivingCalendar.Business
 {

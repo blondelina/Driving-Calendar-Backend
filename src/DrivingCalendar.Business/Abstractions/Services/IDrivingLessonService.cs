@@ -6,5 +6,6 @@ namespace DrivingCalendar.Business.Abstractions.Services
     public interface IDrivingLessonService
     {
         Task<DrivingLesson> GetByIdAsync(int drivingLessonId);
+        Task<int> CreateDrivingLessonByInstructor(CreateDrivingLesson instructorRequest);
     }
 }

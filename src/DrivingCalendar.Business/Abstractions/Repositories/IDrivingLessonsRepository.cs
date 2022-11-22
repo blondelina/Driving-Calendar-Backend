@@ -5,6 +5,7 @@ namespace DrivingCalendar.Business.Abstractions.Repositories
 {
     public interface IDrivingLessonsRepository
     {
-        Task<DrivingLesson> GetByIdAsync(int drivingLessongId);
+        Task<DrivingLesson> GetByIdAsync(int drivingLessonId, int userId);
+        Task<int> CreateDrivingLesson(CreateDrivingLesson createDrivingLesson);
     }
 }

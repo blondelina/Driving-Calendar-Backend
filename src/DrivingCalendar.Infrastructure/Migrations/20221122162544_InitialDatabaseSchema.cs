@@ -218,7 +218,7 @@ namespace DrivingCalendar.Infrastructure.Migrations
                     InstructorId = table.Column<int>(type: "int", nullable: false),
                     StudentId = table.Column<int>(type: "int", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     StudentStatus = table.Column<int>(type: "int", nullable: false),
                     InstructorStatus = table.Column<int>(type: "int", nullable: false)
                 },
