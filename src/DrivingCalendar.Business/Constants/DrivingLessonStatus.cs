@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace DrivingCalendar.Business.Enums
+namespace DrivingCalendar.Business.Constants
 {
     public enum DrivingLessonStatus
     {

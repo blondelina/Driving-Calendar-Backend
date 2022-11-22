@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace DrivingCalendar.Infrastructure
 {
@@ -18,13 +19,20 @@ namespace DrivingCalendar.Infrastructure
 
             builder.Services.AddTransient<IDrivingLessonsRepository, DrivingLessonRepository>();
             builder.Services.AddTransient<IAvailabilityRepository, AvailabilityRepository>();
+            builder.Services.AddTransient<IInstructorRepository, InstructorRepository>();
+            builder.Services.AddTransient<IStudentsRepository, StudentsRepository>();
 
             return builder;
         }
 
+        public static IdentityBuilder AddIdentityFrameworkStores(this IdentityBuilder builder)
+        {
+            return builder.AddEntityFrameworkStores<ApplicationDbContext>();
+        }
+
         public static async Task RunMigrationsAsync(IServiceProvider provider)
         {
-            using ApplicationDbContext applicationDbContext = provider.GetRequiredService<ApplicationDbContext>();
+            await using ApplicationDbContext applicationDbContext = provider.GetRequiredService<ApplicationDbContext>();
             await applicationDbContext.Database.MigrateAsync();
         }
     }

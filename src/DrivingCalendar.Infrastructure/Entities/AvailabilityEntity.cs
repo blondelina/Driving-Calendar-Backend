@@ -11,7 +11,6 @@ namespace DrivingCalendar.Infrastructure.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [ForeignKey(nameof(BaseUserEntity))]
         public int UserId { get; set; }
 
         public DateTime StartDate { get; set; }

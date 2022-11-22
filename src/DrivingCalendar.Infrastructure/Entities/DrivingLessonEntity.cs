@@ -1,11 +1,12 @@
-﻿using DrivingCalendar.Business.Enums;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using DrivingCalendar.Business.Constants;
+using DrivingCalendar.Business.Models;
 
 namespace DrivingCalendar.Infrastructure.Entities
 {
-    [Table("DrivingLesson")]
+    [Table("DrivingLessons")]
 
     internal class DrivingLessonEntity
     {
@@ -13,11 +14,9 @@ namespace DrivingCalendar.Infrastructure.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [ForeignKey(nameof(BaseUserEntity))]
-        public string InstructorId { get; set; }
+        public int InstructorId { get; set; }
 
-        [ForeignKey(nameof(BaseUserEntity))]
-        public string StudentId { get; set; }
+        public int StudentId { get; set; }
 
         public DateTime StartDate { get; set; }
 

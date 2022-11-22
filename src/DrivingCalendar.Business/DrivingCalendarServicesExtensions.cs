@@ -2,13 +2,14 @@
 using DrivingCalendar.Business.Service;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using DrivingCalendar.Business.Services;
 
 namespace DrivingCalendar.Business
 {
     public static class DrivingCalendarServicesExtensions
     {
         public static IServiceCollection AddServices(
-            this IServiceCollection services, 
+            this IServiceCollection services,
             Action<DrivingCalendarBuilder> setup
         )
         {
@@ -16,7 +17,8 @@ namespace DrivingCalendar.Business
             setup(builder);
 
             services.AddTransient<IDrivingLessonService, DrivingLessonService>();
-            services.AddTransient<IAvailabityService, AvailabiltyService>();
+            services.AddTransient<IAvailabilityService, AvailabilityService>();
+            services.AddTransient<IContextService, ContextService>();
 
             return services;
         }

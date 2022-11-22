@@ -12,5 +12,7 @@ namespace DrivingCalendar.Business.Abstractions.Repositories
         Task<int> CreateAvailabilityAsync(CreateAvailability createAvailability);
 
         Task<IList<int>> CreateManyAsync(IEnumerable<CreateAvailability> createAvailabilities);
+
+        Task<IList<Availability>> GetAvailabilities(int userId, DateTime? startDate, DateTime? endDate);
     }
 }

@@ -1,5 +1,5 @@
-﻿using DrivingCalendar.Business.Enums;
-using System;
+﻿using System;
+using DrivingCalendar.Business.Constants;
 
 namespace DrivingCalendar.Business.Models
 {
@@ -7,9 +7,9 @@ namespace DrivingCalendar.Business.Models
     {
         public int Id { get; set; }
 
-        public string InstructorId { get; set; }
+        public int InstructorId { get; set; }
 
-        public string StudentId { get; set; }
+        public int StudentId { get; set; }
 
         public DateTime StartDate { get; set; }
 

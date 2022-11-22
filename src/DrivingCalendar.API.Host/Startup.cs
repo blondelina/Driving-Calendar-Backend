@@ -1,13 +1,15 @@
 ﻿using DrivingCalendar.API.Host.Extensions;
 using DrivingCalendar.API.Host.Filters;
 using DrivingCalendar.API.Host.Settings;
-using DrivingCalendar.Business;
 using DrivingCalendar.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Threading.Tasks;
+using DrivingCalendar.Business;
+using DrivingCalendar.Business.Configuration;
+using Microsoft.AspNetCore.Identity;
 
 namespace DrivingCalendar.API.Host
 {
@@ -29,10 +31,28 @@ namespace DrivingCalendar.API.Host
             });
 
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen();
+            services.AddSwaggerGenWithBearerAuthorization();
 
-           
-            services.AddServices(builder => builder.PersistInSqlServer(settings.ConnectionStrings.DefaultConnection));
+            services.AddJwtAuthentication(settings.JwtSettings);
+
+            services.AddIdentityCore<IdentityUser<int>>()
+                .AddSignInManager()
+                .AddIdentityFrameworkStores();
+
+            services.ConfigureStudentsIdentity()
+                .AddIdentityFrameworkStores();
+            services.ConfigureInstructorsIdentity()
+                .AddIdentityFrameworkStores();
+
+            services
+                .AddApi(options =>
+                {
+                    options.JwtIssuer = settings.JwtSettings.Issuer;
+                    options.JwtAudience = settings.JwtSettings.Audience;
+                    options.JwtSecretKey = settings.JwtSettings.SecretKey;
+                    options.JwtExpirationInHours = settings.JwtSettings.ExpirationInHours;
+                })
+                .AddServices(builder => builder.PersistInSqlServer(settings.ConnectionStrings.DefaultConnection));
         }
 
         public async Task Configure(WebApplication app)
@@ -43,13 +63,14 @@ namespace DrivingCalendar.API.Host
                 app.UseSwaggerUI();
             }
 
-            using (var scope = app.Services.CreateScope())
+            using (IServiceScope scope = app.Services.CreateScope())
             {
                 await DrivingCalendarBuilderExtensions.RunMigrationsAsync(scope.ServiceProvider);
             }
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();

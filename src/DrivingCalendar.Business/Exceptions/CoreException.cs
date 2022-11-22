@@ -10,7 +10,7 @@ namespace DrivingCalendar.Business.Exceptions
             StatusCode = statusCode;
         }
 
-        public CoreException(HttpStatusCode statusCode) : base()
+        public CoreException(HttpStatusCode statusCode) : base("")
         {
             StatusCode = statusCode;
         }

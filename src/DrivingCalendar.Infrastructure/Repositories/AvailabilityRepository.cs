@@ -4,8 +4,8 @@ using DrivingCalendar.Infrastructure.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace DrivingCalendar.Infrastructure.Repositories
 {
@@ -48,6 +48,20 @@ namespace DrivingCalendar.Infrastructure.Repositories
             await _context.SaveChangesAsync();
 
             return availabilityEntities.Select(e => e.Id).ToList();
+        }
+
+        public async Task<IList<Availability>> GetAvailabilities(int userId, DateTime? startDate, DateTime? endDate)
+        {
+
+            return await _context.Availabilities.Where(a => a.UserId == userId
+                                                            && (startDate == null || a.StartDate >= startDate)
+                                                            && (endDate == null || a.EndDate <= endDate))
+                .Select(a => new Availability
+                {
+                    StartDate = a.StartDate,
+                    EndDate = a.EndDate
+                })
+                .ToListAsync();
         }
     }
 }
