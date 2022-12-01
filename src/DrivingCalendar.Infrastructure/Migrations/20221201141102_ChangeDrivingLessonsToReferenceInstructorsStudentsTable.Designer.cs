@@ -4,6 +4,7 @@ using DrivingCalendar.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DrivingCalendar.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221201141102_ChangeDrivingLessonsToReferenceInstructorsStudentsTable")]
+    partial class ChangeDrivingLessonsToReferenceInstructorsStudentsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -93,7 +95,7 @@ namespace DrivingCalendar.Infrastructure.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("StudentInstructorId")
+                    b.Property<int>("StudentInstructorEntityId")
                         .HasColumnType("int");
 
                     b.Property<int>("StudentStatus")
@@ -101,7 +103,7 @@ namespace DrivingCalendar.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("StudentInstructorId");
+                    b.HasIndex("StudentInstructorEntityId");
 
                     b.ToTable("DrivingLessons");
                 });
@@ -328,7 +330,7 @@ namespace DrivingCalendar.Infrastructure.Migrations
                 {
                     b.HasOne("DrivingCalendar.Infrastructure.Entities.StudentInstructorEntity", "StudentInstructorEntity")
                         .WithMany()
-                        .HasForeignKey("StudentInstructorId")
+                        .HasForeignKey("StudentInstructorEntityId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
