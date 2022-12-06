@@ -43,7 +43,8 @@ namespace DrivingCalendar.API.Host
                 .AddIdentityFrameworkStores();
             services.ConfigureInstructorsIdentity()
                 .AddIdentityFrameworkStores();
-
+            services.ConfigureCompanyIdentity()
+                .AddIdentityFrameworkStores();
             services
                 .AddApi(options =>
                 {
