@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DrivingCalendar.Business.Abstractions.Repositories;
 using DrivingCalendar.Business.Models;
+using DrivingCalendar.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace DrivingCalendar.Infrastructure.Repositories
@@ -23,6 +24,20 @@ namespace DrivingCalendar.Infrastructure.Repositories
                 .Where(si => si.InstructorId == instructorId)
                 .Select(si => si.Student)
                 .ToListAsync();
+        }
+
+        public async Task<int> AddStudent(Student student, int instructorId)
+        {
+            StudentInstructorEntity studentInstructorEntity = new()
+            {
+                InstructorId = instructorId,
+                StudentId = student.Id,
+                Student = student,
+                Instructor = await _dbContext.Instructors.FindAsync(instructorId)
+            };
+            _dbContext.Add(studentInstructorEntity);
+
+            return studentInstructorEntity.Id;
         }
     }
 }

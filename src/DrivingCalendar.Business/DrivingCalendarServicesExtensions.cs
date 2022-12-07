@@ -17,6 +17,7 @@ namespace DrivingCalendar.Business
 
             services.AddTransient<IDrivingLessonService, DrivingLessonService>();
             services.AddTransient<IAvailabilityService, AvailabilityService>();
+            services.AddTransient<IInstructorService, InstructorService>();
             services.AddTransient<IContextService, ContextService>();
 
             return services;
