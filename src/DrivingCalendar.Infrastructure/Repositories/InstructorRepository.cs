@@ -26,13 +26,13 @@ namespace DrivingCalendar.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<int> AddStudent(Student student, int instructorId)
+        public async Task<int> AddStudent(int studentId, int instructorId)
         {
             StudentInstructorEntity studentInstructorEntity = new()
             {
                 InstructorId = instructorId,
-                StudentId = student.Id,
-                Student = student,
+                StudentId = studentId,
+                Student = await _dbContext.Students.FindAsync(studentId),
                 Instructor = await _dbContext.Instructors.FindAsync(instructorId)
             };
             _dbContext.Add(studentInstructorEntity);

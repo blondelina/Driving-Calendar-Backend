@@ -24,7 +24,7 @@ namespace DrivingCalendar.Business.Services
             _instructorRepository = instructorRepository;
         }
 
-        public async Task<int> AddStudentToInstructor(Student student, int instructorId)
+        public async Task<int> AddStudentToInstructor(int studentId, int instructorId)
         {
             IdentityUser<int> currentUser = await _contextService.GetCurrentUserAsync();
             if (currentUser.Id != instructorId)
@@ -38,7 +38,7 @@ namespace DrivingCalendar.Business.Services
                 throw new StudentNotFoundException();
             }
 
-            return await _instructorRepository.AddStudent(student, instructorId);
+            return await _instructorRepository.AddStudent(studentId, instructorId);
         }
     }
 }

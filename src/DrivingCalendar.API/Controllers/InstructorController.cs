@@ -24,9 +24,9 @@ namespace DrivingCalendar.API.Controllers
 
         [HttpPost("instructors/{instructorId}/student")]
         [Authorize(Roles = IdentityRoles.INSTRUCTOR)]
-        public async Task<IActionResult> AddToInstructor([FromBody][Required] Student student, [FromRoute][Required] int instructorId)
+        public async Task<IActionResult> AddToInstructor([FromBody][Required] AddStudentToInstructorRequest request, [FromRoute][Required] int instructorId)
         {
-            return new ObjectResult(await _instructorService.AddStudentToInstructor(student, instructorId));
+            return new ObjectResult(await _instructorService.AddStudentToInstructor(request.studentId, instructorId));
         }
 
     }

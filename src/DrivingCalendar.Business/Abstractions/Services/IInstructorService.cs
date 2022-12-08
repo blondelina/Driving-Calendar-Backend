@@ -9,6 +9,6 @@ namespace DrivingCalendar.Business.Abstractions.Services
 {
     public interface IInstructorService 
     {
-        Task<int> AddStudentToInstructor(Student student, int instructorId);
+        Task<int> AddStudentToInstructor(int studentId, int instructorId);
     }
 }
