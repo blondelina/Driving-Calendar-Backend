@@ -3,6 +3,7 @@ using DrivingCalendar.Business.Models;
 using DrivingCalendar.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace DrivingCalendar.Infrastructure.Repositories
@@ -34,8 +35,20 @@ namespace DrivingCalendar.Infrastructure.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<int> CreateDrivingLesson(CreateDrivingLesson createDrivingLesson)
+        public async Task< (HttpStatusCode, int)> CreateDrivingLesson(CreateDrivingLesson createDrivingLesson)
         {
+            HttpStatusCode status = HttpStatusCode.OK;
+
+           if(await _context.Students.FindAsync(createDrivingLesson.StudentId)==null)
+            {
+                return (HttpStatusCode.BadRequest, 0);
+            }
+
+            if (await _context.Instructors.FindAsync(createDrivingLesson.InstructorId)==null)
+            {
+                return (HttpStatusCode.BadRequest, 0);
+            }
+
             StudentInstructorEntity studentInstructorEntity = new()
             {
                 InstructorId = createDrivingLesson.InstructorId,
@@ -58,7 +71,7 @@ namespace DrivingCalendar.Infrastructure.Repositories
             _context.Add(drivingLesson);
             await _context.SaveChangesAsync();
 
-            return drivingLesson.Id;
+            return (status,drivingLesson.Id);
         }
     }
 }

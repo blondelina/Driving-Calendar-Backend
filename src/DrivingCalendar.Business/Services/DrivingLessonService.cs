@@ -7,6 +7,7 @@ using DrivingCalendar.Business.Models;
 using System.Threading.Tasks;
 using DrivingCalendar.Business.Exceptions;
 using Microsoft.AspNetCore.Identity;
+using System.Net;
 
 namespace DrivingCalendar.Business.Services
 {
@@ -32,7 +33,7 @@ namespace DrivingCalendar.Business.Services
             return await _drivingLessonsRepository.GetByIdAsync(drivingLessonId, currentUser.Id);
         }
 
-        public async Task<int> CreateDrivingLessonByInstructor(CreateDrivingLesson instructorRequest)
+        public async Task<(HttpStatusCode, int)> CreateDrivingLessonByInstructor(CreateDrivingLesson instructorRequest)
         {
             IdentityUser<int> currentUser = await _contextService.GetCurrentUserAsync();
             if (currentUser.Id != instructorRequest.InstructorId)
@@ -50,7 +51,7 @@ namespace DrivingCalendar.Business.Services
             instructorRequest.InstructorStatus = DrivingLessonStatus.Confirmed;
             instructorRequest.StudentStatus = DrivingLessonStatus.Pending;
 
-            return await _drivingLessonsRepository.CreateDrivingLesson(instructorRequest);
+             return await _drivingLessonsRepository.CreateDrivingLesson(instructorRequest);
         }
     }
 }
