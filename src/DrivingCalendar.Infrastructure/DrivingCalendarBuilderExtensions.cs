@@ -14,7 +14,7 @@ namespace DrivingCalendar.Infrastructure
         public static DrivingCalendarBuilder PersistInSqlServer(
             this DrivingCalendarBuilder builder,
             string connectionString)
-        {
+        { 
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
             builder.Services.AddTransient<IDrivingLessonsRepository, DrivingLessonRepository>();

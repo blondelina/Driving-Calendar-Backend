@@ -54,14 +54,16 @@ namespace DrivingCalendar.API.Controllers
 
         [AllowAnonymous]
         [HttpPost("students/register")]
-        public async Task<IActionResult> RegisterStudentAsync([FromBody][Required] RegisterAccountRequest registerAccountRequest)
+        public async Task<IActionResult> RegisterStudentAsync([FromBody][Required] RegisterStudentAccount registerStudentAccount)
         {
             Student newStudent = new()
             {
-                UserName = registerAccountRequest.Username,
-                Email = registerAccountRequest.Email,
+                FirstName = registerStudentAccount.FirstName,
+                LastName = registerStudentAccount.LastName,
+                UserName = registerStudentAccount.Username,
+                Email = registerStudentAccount.Email,
             };
-            IdentityResult result = await _studentUserManager.CreateAsync(newStudent, registerAccountRequest.Password);
+            IdentityResult result = await _studentUserManager.CreateAsync(newStudent, registerStudentAccount.Password);
 
             if (!result.Succeeded)
             {
@@ -101,16 +103,17 @@ namespace DrivingCalendar.API.Controllers
 
         [Authorize(Roles = IdentityRoles.COMPANY)]
         [HttpPost("instructors/register")]
-        public async Task<IActionResult> RegisterInstructorAsync([FromBody][Required] RegisterAccountRequest registerAccountRequest)
+        public async Task<IActionResult> RegisterInstructorAsync([FromBody][Required] RegisterInstructorAccount registerInstructorAccount)
         {
             IdentityUser<int> company = await _contextService.GetCurrentUserAsync();
             Instructor newInstructor = new()
-            {
-                UserName = registerAccountRequest.Username,
-                Email = registerAccountRequest.Email,
+            {   FirstName = registerInstructorAccount.FirstName,
+                LastName = registerInstructorAccount.LastName,
+                UserName = registerInstructorAccount.Username,
+                Email = registerInstructorAccount.Email,
                 CompanyId = company.Id
             };
-            IdentityResult result = await _instructorUserManager.CreateAsync(newInstructor, registerAccountRequest.Password);
+            IdentityResult result = await _instructorUserManager.CreateAsync(newInstructor, registerInstructorAccount.Password);
 
             if (!result.Succeeded)
             {

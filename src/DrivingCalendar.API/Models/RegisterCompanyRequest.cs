@@ -3,7 +3,7 @@
 
 namespace DrivingCalendar.API.Models
 {
-    public class RegisterCompanyRequest:RegisterAccountRequest
+    public class RegisterCompanyRequest : RegisterAccountRequest
     {
         [Required]
         public string CompanyName { get; set; }
