@@ -32,10 +32,8 @@ namespace DrivingCalendar.Infrastructure.Repositories
             {
                 InstructorId = instructorId,
                 StudentId = studentId,
-                Student = await _dbContext.Students.FindAsync(studentId),
-                Instructor = await _dbContext.Instructors.FindAsync(instructorId)
             };
-            _dbContext.Add(studentInstructorEntity);
+            await _dbContext.AddAsync(studentInstructorEntity);
 
             return studentInstructorEntity.Id;
         }

@@ -15,13 +15,16 @@ namespace DrivingCalendar.Business.Services
     {
         private readonly IContextService _contextService;
         private readonly IInstructorRepository _instructorRepository;
+        private readonly UserManager<IdentityUser<int>> _userManager;
 
-    
+
         public InstructorService(IContextService contextService,
-        IInstructorRepository instructorRepository)
+        IInstructorRepository instructorRepository,
+        UserManager<IdentityUser<int>> userManager)
         {
             _contextService = contextService;
             _instructorRepository = instructorRepository;
+            _userManager = userManager;
         }
 
         public async Task<int> AddStudentToInstructor(int studentId, int instructorId)
@@ -32,10 +35,23 @@ namespace DrivingCalendar.Business.Services
                 throw new UserNotAllowedException();
             }
 
-            IList<Student> instructorStudentIds = await _instructorRepository.GetInstructorStudents(instructorId);
-            if (instructorStudentIds.All(s => s.Id != instructorId))
+            IdentityUser<int> instructor = await _userManager.FindByIdAsync(instructorId.ToString());
+            if (instructor == null)
+            {
+                throw new InstructortNotFoundException();
+            }
+
+            IdentityUser<int> student = await _userManager.FindByIdAsync(studentId.ToString());
+            if (student == null)
             {
                 throw new StudentNotFoundException();
+            }
+
+
+            IList<Student> instructorStudentIds = await _instructorRepository.GetInstructorStudents(instructorId);
+            if (instructorStudentIds.Any(s => s.Id == studentId))
+            {
+                throw new StudentAlreadyLinkedToInstructorException();
             }
 
             return await _instructorRepository.AddStudent(studentId, instructorId);

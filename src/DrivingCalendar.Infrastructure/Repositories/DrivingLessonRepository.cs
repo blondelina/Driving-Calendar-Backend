@@ -35,19 +35,8 @@ namespace DrivingCalendar.Infrastructure.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public async Task< (HttpStatusCode, int)> CreateDrivingLesson(CreateDrivingLesson createDrivingLesson)
+        public async Task<int> CreateDrivingLesson(CreateDrivingLesson createDrivingLesson)
         {
-            HttpStatusCode status = HttpStatusCode.OK;
-
-           if(await _context.Students.FindAsync(createDrivingLesson.StudentId)==null)
-            {
-                return (HttpStatusCode.BadRequest, 0);
-            }
-
-            if (await _context.Instructors.FindAsync(createDrivingLesson.InstructorId)==null)
-            {
-                return (HttpStatusCode.BadRequest, 0);
-            }
 
             StudentInstructorEntity studentInstructorEntity = new()
             {
@@ -71,7 +60,7 @@ namespace DrivingCalendar.Infrastructure.Repositories
             _context.Add(drivingLesson);
             await _context.SaveChangesAsync();
 
-            return (status,drivingLesson.Id);
+            return (drivingLesson.Id);
         }
     }
 }
