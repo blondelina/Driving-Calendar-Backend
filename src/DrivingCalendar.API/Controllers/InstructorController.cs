@@ -9,6 +9,7 @@ using DrivingCalendar.Business.Constants;
 using DrivingCalendar.Business.Abstractions.Repositories;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 namespace DrivingCalendar.API.Controllers
 {
@@ -36,17 +37,12 @@ namespace DrivingCalendar.API.Controllers
         public async Task<IList<StudentResponse>> GetStudentsFromInstructors([FromRoute][Required] int instructorId)
         {
             IList<Student> students = await _instructorService.GetStudents(instructorId);
-            IList<StudentResponse> response= new List<StudentResponse>();
-
-            foreach (Student student in students)
+            IList<StudentResponse> response = students.Select(s => new StudentResponse
             {
-                StudentResponse studentResponse = new StudentResponse
-                {
-                    studentId = student.Id,
-                    studentName = student.UserName
-                };
-                response.Add(studentResponse);
-            }
+                studentId = s.Id,
+                studentName = $"{s.FirstName} {s.LastName}"
+            }).ToList();
+  
             return response;
         }
 
