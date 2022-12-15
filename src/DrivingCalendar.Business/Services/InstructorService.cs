@@ -56,5 +56,22 @@ namespace DrivingCalendar.Business.Services
 
             return await _instructorRepository.AddStudent(studentId, instructorId);
         }
+        public async Task<IList<Student>> GetStudents(int instructorId)
+        {
+            IdentityUser<int> currentUser = await _contextService.GetCurrentUserAsync();
+            if (currentUser.Id != instructorId)
+            {
+                throw new UserNotAllowedException();
+            }
+            
+            IdentityUser<int> instructor = await _userManager.FindByIdAsync(instructorId.ToString());
+            if (instructor is null)
+            {
+                throw new InstructortNotFoundException();
+            }
+
+            return await _instructorRepository.GetInstructorStudents(instructorId);
+
+        }
     }
 }

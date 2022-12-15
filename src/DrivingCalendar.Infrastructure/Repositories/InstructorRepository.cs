@@ -34,6 +34,7 @@ namespace DrivingCalendar.Infrastructure.Repositories
                 StudentId = studentId,
             };
             await _dbContext.AddAsync(studentInstructorEntity);
+            await _dbContext.SaveChangesAsync();
 
             return studentInstructorEntity.Id;
         }
