@@ -37,5 +37,23 @@ namespace DrivingCalendar.Business.Configuration
                 })
                 .AddSignInManager<SignInManager<Instructor>>();
         }
+
+        public static IdentityBuilder ConfigureCompanyIdentity(this IServiceCollection services)
+        {
+            return services.AddIdentityCore<Company>(options =>
+            {
+                options.User.RequireUniqueEmail = true;
+                options.SignIn.RequireConfirmedAccount = false;
+
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireDigit = false;
+
+                options.Lockout.MaxFailedAccessAttempts = 100;
+            })
+                .AddSignInManager<SignInManager<Company>>();
+
+        
+        }
     }
 }

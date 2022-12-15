@@ -4,6 +4,7 @@ using DrivingCalendar.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DrivingCalendar.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221212160459_FirstNameLastNameToUsers")]
+    partial class FirstNameLastNameToUsers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -87,13 +89,16 @@ namespace DrivingCalendar.Infrastructure.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("InstructorId")
+                        .HasColumnType("int");
+
                     b.Property<int>("InstructorStatus")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("StudentInstructorId")
+                    b.Property<int>("StudentId")
                         .HasColumnType("int");
 
                     b.Property<int>("StudentStatus")
@@ -101,7 +106,9 @@ namespace DrivingCalendar.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("StudentInstructorId");
+                    b.HasIndex("InstructorId");
+
+                    b.HasIndex("StudentId");
 
                     b.ToTable("DrivingLessons");
                 });
@@ -353,13 +360,17 @@ namespace DrivingCalendar.Infrastructure.Migrations
 
             modelBuilder.Entity("DrivingCalendar.Infrastructure.Entities.DrivingLessonEntity", b =>
                 {
-                    b.HasOne("DrivingCalendar.Infrastructure.Entities.StudentInstructorEntity", "StudentInstructorEntity")
+                    b.HasOne("DrivingCalendar.Business.Models.Instructor", null)
                         .WithMany()
-                        .HasForeignKey("StudentInstructorId")
+                        .HasForeignKey("InstructorId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("StudentInstructorEntity");
+                    b.HasOne("DrivingCalendar.Business.Models.Student", null)
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DrivingCalendar.Infrastructure.Entities.StudentInstructorEntity", b =>

@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
+using DrivingCalendar.Business.Abstractions.Services;
 
 namespace DrivingCalendar.API.Controllers
 {
@@ -27,33 +28,42 @@ namespace DrivingCalendar.API.Controllers
         private readonly ApiOptions _options;
         private readonly UserManager<IdentityUser<int>> _userManager;
         private readonly UserManager<Student> _studentUserManager;
+        private readonly UserManager<Company> _companyUserManager;
         private readonly UserManager<Instructor> _instructorUserManager;
         private readonly SignInManager<IdentityUser<int>> _signInManager;
+        private readonly IContextService _contextService;
 
         public AccountController(
             ApiOptions options, 
             UserManager<IdentityUser<int>> userManager,
             UserManager<Student> studentUserManager,
             UserManager<Instructor> instructorUserManager,
-            SignInManager<IdentityUser<int>> signInManager)
+            SignInManager<IdentityUser<int>> signInManager,
+            UserManager<Company> companyUserManager,
+            IContextService contextService)
         {
             _options = options;
             _userManager = userManager;
             _studentUserManager = studentUserManager;
             _signInManager = signInManager;
             _instructorUserManager = instructorUserManager;
+            _companyUserManager = companyUserManager;
+            _contextService = contextService;
         }
+     
 
         [AllowAnonymous]
         [HttpPost("students/register")]
-        public async Task<IActionResult> RegisterStudentAsync([FromBody][Required] RegisterAccountRequest registerAccountRequest)
+        public async Task<IActionResult> RegisterStudentAsync([FromBody][Required] RegisterStudentAccount registerStudentAccount)
         {
             Student newStudent = new()
             {
-                UserName = registerAccountRequest.Username,
-                Email = registerAccountRequest.Email,
+                FirstName = registerStudentAccount.FirstName,
+                LastName = registerStudentAccount.LastName,
+                UserName = registerStudentAccount.Username,
+                Email = registerStudentAccount.Email,
             };
-            IdentityResult result = await _studentUserManager.CreateAsync(newStudent, registerAccountRequest.Password);
+            IdentityResult result = await _studentUserManager.CreateAsync(newStudent, registerStudentAccount.Password);
 
             if (!result.Succeeded)
             {
@@ -67,15 +77,43 @@ namespace DrivingCalendar.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("instructors/register")]
-        public async Task<IActionResult> RegisterInstructorAsync([FromBody][Required] RegisterAccountRequest registerAccountRequest)
+        [HttpPost("companies/register")]
+        public async Task<IActionResult> RegisterCompanyAsync([FromBody][Required] RegisterCompanyRequest registerCompanyRequest)
         {
-            Instructor newInstructor = new()
-            {
-                UserName = registerAccountRequest.Username,
-                Email = registerAccountRequest.Email,
+            
+            Company newCompany = new()
+            {   
+                UserName=registerCompanyRequest.Username,
+                Email = registerCompanyRequest.Email,
+                CompanyName = registerCompanyRequest.CompanyName,
             };
-            IdentityResult result = await _instructorUserManager.CreateAsync(newInstructor, registerAccountRequest.Password);
+            IdentityResult result = await _companyUserManager.CreateAsync(newCompany, registerCompanyRequest.Password);
+
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            return new ObjectResult(newCompany.Id)
+            {
+                StatusCode = StatusCodes.Status201Created
+            };
+        }
+
+
+        [Authorize(Roles = IdentityRoles.COMPANY)]
+        [HttpPost("instructors/register")]
+        public async Task<IActionResult> RegisterInstructorAsync([FromBody][Required] RegisterInstructorAccount registerInstructorAccount)
+        {
+            IdentityUser<int> company = await _contextService.GetCurrentUserAsync();
+            Instructor newInstructor = new()
+            {   FirstName = registerInstructorAccount.FirstName,
+                LastName = registerInstructorAccount.LastName,
+                UserName = registerInstructorAccount.Username,
+                Email = registerInstructorAccount.Email,
+                CompanyId = company.Id
+            };
+            IdentityResult result = await _instructorUserManager.CreateAsync(newInstructor, registerInstructorAccount.Password);
 
             if (!result.Succeeded)
             {
@@ -113,7 +151,10 @@ namespace DrivingCalendar.API.Controllers
             {
                 claims.Add(new Claim(ClaimTypes.Role, IdentityRoles.STUDENT));
             }
-
+            if (await _companyUserManager.FindByIdAsync(user.Id.ToString()) is not null)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, IdentityRoles.COMPANY));
+            }
             if(await _instructorUserManager.FindByIdAsync(user.Id.ToString()) is not null)
             {
                 claims.Add(new Claim(ClaimTypes.Role, IdentityRoles.INSTRUCTOR));
