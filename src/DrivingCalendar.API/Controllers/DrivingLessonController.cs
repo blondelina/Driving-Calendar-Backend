@@ -42,7 +42,6 @@ namespace DrivingCalendar.API.Controllers
                 EndDate = instructorRequest.EndDate,
 
             };
-
             return new ObjectResult(await _drivingLessonService.CreateDrivingLessonByInstructor(createDrivingLesson));
 
         }

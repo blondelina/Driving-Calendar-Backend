@@ -7,6 +7,7 @@ using DrivingCalendar.Business.Models;
 using System.Threading.Tasks;
 using DrivingCalendar.Business.Exceptions;
 using Microsoft.AspNetCore.Identity;
+using System.Net;
 
 namespace DrivingCalendar.Business.Services
 {
@@ -15,15 +16,17 @@ namespace DrivingCalendar.Business.Services
         private readonly IDrivingLessonsRepository _drivingLessonsRepository;
         private readonly IContextService _contextService;
         private readonly IInstructorRepository _instructorRepository;
+        private readonly UserManager<IdentityUser<int>> _userManager;
 
         public DrivingLessonService(
             IDrivingLessonsRepository drivingLessonsRepository, 
             IContextService contextService,
-            IInstructorRepository instructorRepository)
+            IInstructorRepository instructorRepository, UserManager<IdentityUser<int>> userManager)
         {
             _drivingLessonsRepository = drivingLessonsRepository;
             _contextService = contextService;
             _instructorRepository = instructorRepository;
+            _userManager = userManager;
         }
 
         public async Task<DrivingLesson> GetByIdAsync(int drivingLessonId)
@@ -40,6 +43,18 @@ namespace DrivingCalendar.Business.Services
                 throw new UserNotAllowedException();
             }
 
+            IdentityUser<int> instructor = await _userManager.FindByIdAsync(currentUser.Id.ToString());
+            if (instructor == null)
+            {
+                throw new InstructortNotFoundException();
+            }
+
+            IdentityUser<int> student = await _userManager.FindByIdAsync(instructorRequest.StudentId.ToString());
+            if (student == null)
+            {
+                throw new StudentNotFoundException();
+            }
+
             IList<Student> instructorStudentIds =
                 await _instructorRepository.GetInstructorStudents(instructorRequest.InstructorId);
             if (instructorStudentIds.All(s => s.Id != instructorRequest.StudentId))
@@ -47,10 +62,11 @@ namespace DrivingCalendar.Business.Services
                 throw new StudentNotFoundException();
             }
 
+
             instructorRequest.InstructorStatus = DrivingLessonStatus.Confirmed;
             instructorRequest.StudentStatus = DrivingLessonStatus.Pending;
 
-            return await _drivingLessonsRepository.CreateDrivingLesson(instructorRequest);
+             return await _drivingLessonsRepository.CreateDrivingLesson(instructorRequest);
         }
     }
 }

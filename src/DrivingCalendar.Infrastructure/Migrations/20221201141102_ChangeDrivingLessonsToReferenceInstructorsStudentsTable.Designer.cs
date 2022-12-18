@@ -4,6 +4,7 @@ using DrivingCalendar.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DrivingCalendar.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221201141102_ChangeDrivingLessonsToReferenceInstructorsStudentsTable")]
+    partial class ChangeDrivingLessonsToReferenceInstructorsStudentsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -93,7 +95,7 @@ namespace DrivingCalendar.Infrastructure.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("StudentInstructorId")
+                    b.Property<int>("StudentInstructorEntityId")
                         .HasColumnType("int");
 
                     b.Property<int>("StudentStatus")
@@ -101,7 +103,7 @@ namespace DrivingCalendar.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("StudentInstructorId");
+                    b.HasIndex("StudentInstructorEntityId");
 
                     b.ToTable("DrivingLessons");
                 });
@@ -301,30 +303,9 @@ namespace DrivingCalendar.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("DrivingCalendar.Business.Models.Company", b =>
-                {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser<int>");
-
-                    b.Property<string>("CompanyName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.ToTable("Companies", (string)null);
-                });
-
             modelBuilder.Entity("DrivingCalendar.Business.Models.Instructor", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser<int>");
-
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasIndex("CompanyId");
 
                     b.ToTable("Instructors", (string)null);
                 });
@@ -332,12 +313,6 @@ namespace DrivingCalendar.Infrastructure.Migrations
             modelBuilder.Entity("DrivingCalendar.Business.Models.Student", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser<int>");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
 
                     b.ToTable("Students", (string)null);
                 });
@@ -355,7 +330,7 @@ namespace DrivingCalendar.Infrastructure.Migrations
                 {
                     b.HasOne("DrivingCalendar.Infrastructure.Entities.StudentInstructorEntity", "StudentInstructorEntity")
                         .WithMany()
-                        .HasForeignKey("StudentInstructorId")
+                        .HasForeignKey("StudentInstructorEntityId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -432,30 +407,13 @@ namespace DrivingCalendar.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("DrivingCalendar.Business.Models.Company", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser<int>", null)
-                        .WithOne()
-                        .HasForeignKey("DrivingCalendar.Business.Models.Company", "Id")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("DrivingCalendar.Business.Models.Instructor", b =>
                 {
-                    b.HasOne("DrivingCalendar.Business.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser<int>", null)
                         .WithOne()
                         .HasForeignKey("DrivingCalendar.Business.Models.Instructor", "Id")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
-
-                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("DrivingCalendar.Business.Models.Student", b =>
