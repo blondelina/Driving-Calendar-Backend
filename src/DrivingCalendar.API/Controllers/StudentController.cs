@@ -3,12 +3,9 @@ using System.Threading.Tasks;
 using DrivingCalendar.Business.Abstractions.Services;
 using DrivingCalendar.Business.Models;
 using Microsoft.AspNetCore.Authorization;
-using System.ComponentModel.DataAnnotations;
 using DrivingCalendar.API.Models;
 using DrivingCalendar.Business.Constants;
-using DrivingCalendar.Business.Abstractions.Repositories;
 using System.Collections.Generic;
-using System;
 using System.Linq;
 
 namespace DrivingCalendar.API.Controllers
@@ -33,7 +30,8 @@ namespace DrivingCalendar.API.Controllers
             IList<DisplayedStudent> response = students.Select(s => new DisplayedStudent
             {
                 studentId = s.Id,
-                studentUserName = s.UserName
+                studentUserName = s.UserName,
+                studentName = $"{s.FirstName} {s.LastName}"
             }).ToList();
 
             return response;

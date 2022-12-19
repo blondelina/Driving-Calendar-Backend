@@ -29,7 +29,9 @@ namespace DrivingCalendar.Infrastructure.Repositories
             return await _dbContext.Students.Select(s => new Student
             {
                 Id = s.Id,
-                UserName = s.UserName
+                UserName = s.UserName,
+                FirstName = s.FirstName,
+                LastName = s.LastName
             }).ToListAsync();
         }
     }

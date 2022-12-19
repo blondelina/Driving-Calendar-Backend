@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace DrivingCalendar.API.Models
 {
@@ -13,5 +8,8 @@ namespace DrivingCalendar.API.Models
         public int studentId { get; set; }
         [Required]
         public string studentUserName { get; set; }
+        [Required]
+        public string studentName { get; set; }
+
     }
 }
