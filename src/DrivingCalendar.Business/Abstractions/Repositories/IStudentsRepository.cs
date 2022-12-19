@@ -7,5 +7,6 @@ namespace DrivingCalendar.Business.Abstractions.Repositories
     public interface IStudentsRepository
     {
         Task<IList<Instructor>> GetStudentInstructors(int studentId);
+        Task<IList<Student>> GetStudents();
     }
 }
