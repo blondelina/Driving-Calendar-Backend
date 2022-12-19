@@ -15,12 +15,22 @@ namespace DrivingCalendar.Infrastructure.Repositories
         {
             _dbContext = dbContext;
         }
+
         public async Task<IList<Instructor>> GetStudentInstructors(int studentId)
         {
             return await _dbContext.StudentInstructors
                 .Where(si => si.StudentId == studentId)
                 .Select(si => si.Instructor)
                 .ToListAsync();
+        }
+
+        public async Task<IList<Student>> GetStudents()
+        {
+            return await _dbContext.Students.Select(s => new Student
+            {
+                Id = s.Id,
+                UserName = s.UserName
+            }).ToListAsync();
         }
     }
 }
