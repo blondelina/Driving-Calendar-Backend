@@ -22,7 +22,7 @@ namespace DrivingCalendar.API.Controllers
             _studentService = studentService;
         }
 
-        [HttpGet("/students")]
+        [HttpGet("students")]
         [Authorize(Roles = IdentityRoles.INSTRUCTOR)]
         public async Task<IList<DisplayedStudent>> GetStudents()
         {
