@@ -6,14 +6,13 @@ using Microsoft.AspNetCore.Authorization;
 using System.ComponentModel.DataAnnotations;
 using DrivingCalendar.API.Models;
 using DrivingCalendar.Business.Constants;
-using DrivingCalendar.Business.Abstractions.Repositories;
 using System.Collections.Generic;
 using System;
 using System.Linq;
 
 namespace DrivingCalendar.API.Controllers
 {
-    [Route("api")]
+    [Route("api/instructors")]
     [ApiController]
     [Authorize]
     public class InstructorController : ControllerBase
@@ -25,26 +24,26 @@ namespace DrivingCalendar.API.Controllers
             _instructorService = instructorService;
         }
 
-        [HttpPost("instructors/{instructorId}/student")]
+        [HttpPost("{instructorId}/students/{studentId}")]
         [Authorize(Roles = IdentityRoles.INSTRUCTOR)]
-        public async Task<IActionResult> AddToInstructor([FromBody][Required] AddStudentToInstructorRequest request, [FromRoute][Required] int instructorId)
+        public async Task<IActionResult> AddToInstructor([FromRoute][Required] int instructorId, [FromRoute] int studentId)
         {
-            return new ObjectResult(await _instructorService.AddStudentToInstructor(request.studentId, instructorId));
+            return new ObjectResult(await _instructorService.AddStudentToInstructor(studentId, instructorId));
         }
 
-        [HttpGet("instructors/{instructorId}/students")]
+        [HttpGet("{instructorId}/students")]
         [Authorize(Roles = IdentityRoles.INSTRUCTOR)]
         public async Task<IList<StudentResponse>> GetStudentsFromInstructors([FromRoute][Required] int instructorId)
         {
             IList<Student> students = await _instructorService.GetStudents(instructorId);
             IList<StudentResponse> response = students.Select(s => new StudentResponse
             {
-                studentId = s.Id,
-                studentName = $"{s.FirstName} {s.LastName}"
+                Id = s.Id,
+                Username = s.UserName,
+                Name = $"{s.FirstName} {s.LastName}"
             }).ToList();
   
             return response;
         }
-
     }
 }

@@ -13,25 +13,34 @@ namespace DrivingCalendar.API.Controllers
     [Route("api")]
     [ApiController]
     [Authorize]
-    public class StudnetController : ControllerBase
+    public class StudentController : ControllerBase
     {
         private readonly IStudentService _studentService;
 
-        public StudnetController(IStudentService studentService)
+        public StudentController(IStudentService studentService)
         {
             _studentService = studentService;
         }
 
         [HttpGet("students")]
         [Authorize(Roles = IdentityRoles.INSTRUCTOR)]
-        public async Task<IList<DisplayedStudent>> GetStudents()
+        public async Task<IList<StudentResponse>> GetStudents([FromQuery] int[] notAssignedToInstructors)
         {
-            IList<Student> students = await _studentService.GetStudents();
-            IList<DisplayedStudent> response = students.Select(s => new DisplayedStudent
+            IList<Student> students;
+            if (notAssignedToInstructors?.Any() ?? false)
             {
-                studentId = s.Id,
-                studentUserName = s.UserName,
-                studentName = $"{s.FirstName} {s.LastName}"
+                students = await _studentService.GetStudentsNotAssignedToInstructors(notAssignedToInstructors);
+            }
+            else
+            {
+                students = await _studentService.GetStudents();
+            }
+
+            IList<StudentResponse> response = students.Select(s => new StudentResponse
+            {
+                Id = s.Id,
+                Username = s.UserName,
+                Name = $"{s.FirstName} {s.LastName}"
             }).ToList();
 
             return response;

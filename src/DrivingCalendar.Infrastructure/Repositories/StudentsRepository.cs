@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DrivingCalendar.Business.Abstractions.Repositories;
 using DrivingCalendar.Business.Models;
+using DrivingCalendar.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace DrivingCalendar.Infrastructure.Repositories
@@ -26,13 +27,14 @@ namespace DrivingCalendar.Infrastructure.Repositories
 
         public async Task<IList<Student>> GetStudents()
         {
-            return await _dbContext.Students.Select(s => new Student
-            {
-                Id = s.Id,
-                UserName = s.UserName,
-                FirstName = s.FirstName,
-                LastName = s.LastName
-            }).ToListAsync();
+            return await _dbContext.Students.ToListAsync();
+        }
+
+        public async Task<IList<Student>> GetStudentsNotAssignedToInstructor(IList<int> instructorIds)
+        {
+            return await _dbContext.Students
+                                   .Where(s => !_dbContext.StudentInstructors.Any(si => instructorIds.Contains(si.InstructorId) && si.StudentId == s.Id))
+                                   .ToListAsync();
         }
     }
 }

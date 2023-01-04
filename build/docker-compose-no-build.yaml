@@ -1,0 +1,28 @@
+version: "3.3"
+services:
+  api:
+    build: ../src
+    user: root
+    ports:
+      - 433:433
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=Local-Identity-Main;User=sa;Password=Qwerty123$$%
+      - ASPNETCORE_URLS=https://+:433
+      - ASPNETCORE_ENVIRONMENT=qa
+      - ASPNETCORE_Kestrel__Certificates__Default__Password="caH8DUjZJTMHtw7DEda"
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/
+
+      - WAIT_HOSTS=shared-ports:1433
+    depends_on:
+      - sql.server
+    #entrypoint: ["dotnet", "DrivingCalendar.API.Host.dll"]
+    entrypoint: ["bash", "-c", "ls /app"]
+    
+
+  sql.server:
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: Qwerty123$$%
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    ports:
+      - 1433:1433

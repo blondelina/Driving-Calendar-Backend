@@ -80,7 +80,6 @@ namespace DrivingCalendar.API.Controllers
         [HttpPost("companies/register")]
         public async Task<IActionResult> RegisterCompanyAsync([FromBody][Required] RegisterCompanyRequest registerCompanyRequest)
         {
-            
             Company newCompany = new()
             {   
                 UserName=registerCompanyRequest.Username,
@@ -101,7 +100,7 @@ namespace DrivingCalendar.API.Controllers
         }
 
 
-        [Authorize(Roles = IdentityRoles.COMPANY)]
+        //[Authorize(Roles = IdentityRoles.COMPANY)]
         [HttpPost("instructors/register")]
         public async Task<IActionResult> RegisterInstructorAsync([FromBody][Required] RegisterInstructorAccount registerInstructorAccount)
         {
@@ -111,7 +110,7 @@ namespace DrivingCalendar.API.Controllers
                 LastName = registerInstructorAccount.LastName,
                 UserName = registerInstructorAccount.Username,
                 Email = registerInstructorAccount.Email,
-                CompanyId = company.Id
+                CompanyId = registerInstructorAccount.CompanyId
             };
             IdentityResult result = await _instructorUserManager.CreateAsync(newInstructor, registerInstructorAccount.Password);
 
@@ -128,7 +127,7 @@ namespace DrivingCalendar.API.Controllers
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<IActionResult> LoginAsync([FromBody] [Required] LoginRequest loginRequest)
+        public async Task<ActionResult<LoginResponse>> LoginAsync([FromBody] [Required] LoginRequest loginRequest)
         {
             IdentityUser<int> user = await _userManager.FindByEmailAsync(loginRequest.Email);
             if (user is null)
@@ -147,18 +146,20 @@ namespace DrivingCalendar.API.Controllers
                 new(ClaimTypes.Name, user.Id.ToString())
             };
 
+            string userRole = null;
             if (await _studentUserManager.FindByIdAsync(user.Id.ToString()) is not null)
             {
-                claims.Add(new Claim(ClaimTypes.Role, IdentityRoles.STUDENT));
+                userRole = IdentityRoles.STUDENT;
             }
-            if (await _companyUserManager.FindByIdAsync(user.Id.ToString()) is not null)
+            else if (await _companyUserManager.FindByIdAsync(user.Id.ToString()) is not null)
             {
-                claims.Add(new Claim(ClaimTypes.Role, IdentityRoles.COMPANY));
+                userRole = IdentityRoles.COMPANY;
             }
-            if(await _instructorUserManager.FindByIdAsync(user.Id.ToString()) is not null)
+            else if (await _instructorUserManager.FindByIdAsync(user.Id.ToString()) is not null)
             {
-                claims.Add(new Claim(ClaimTypes.Role, IdentityRoles.INSTRUCTOR));
+                userRole = IdentityRoles.INSTRUCTOR;
             }
+            claims.Add(new Claim(ClaimTypes.Role, userRole));
 
             SigningCredentials signingCredentials = new(
                 new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.JwtSecretKey)),
@@ -179,7 +180,10 @@ namespace DrivingCalendar.API.Controllers
             return Ok(new LoginResponse
             {
                 AccessToken = new JwtSecurityTokenHandler().WriteToken(jwt),
-                UnixTimeExpiresAt = new DateTimeOffset(jwt.ValidTo).ToUnixTimeMilliseconds()
+                UnixTimeExpiresAt = new DateTimeOffset(jwt.ValidTo).ToUnixTimeMilliseconds(),
+                UserId = user.Id,
+                Email = user.Email,
+                Role = userRole
             });
         }
     }

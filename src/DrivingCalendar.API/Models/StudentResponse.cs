@@ -9,9 +9,8 @@ namespace DrivingCalendar.API.Models
 {
     public class StudentResponse
     {
-        [Required]
-        public int studentId { get; set; }
-        [Required]
-        public string studentName { get; set;}
+        public int Id { get; set; }
+        public string Username { get; set; }
+        public string Name { get; set;}
     }
 }

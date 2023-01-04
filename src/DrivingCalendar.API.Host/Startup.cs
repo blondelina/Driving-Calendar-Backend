@@ -8,8 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Threading.Tasks;
 using DrivingCalendar.Business;
-using DrivingCalendar.Business.Configuration;
 using Microsoft.AspNetCore.Identity;
+using DrivingCalendar.Business.Configuration;
 
 namespace DrivingCalendar.API.Host
 {
