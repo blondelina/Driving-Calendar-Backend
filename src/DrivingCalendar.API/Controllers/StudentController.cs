@@ -13,11 +13,11 @@ namespace DrivingCalendar.API.Controllers
     [Route("api")]
     [ApiController]
     [Authorize]
-    public class StudnetController : ControllerBase
+    public class StudentController : ControllerBase
     {
         private readonly IStudentService _studentService;
 
-        public StudnetController(IStudentService studentService)
+        public StudentController(IStudentService studentService)
         {
             _studentService = studentService;
         }
