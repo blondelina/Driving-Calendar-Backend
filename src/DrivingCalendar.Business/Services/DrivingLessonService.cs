@@ -29,10 +29,10 @@ namespace DrivingCalendar.Business.Services
             _userManager = userManager;
         }
 
-        public async Task<DrivingLesson> GetByIdAsync(int drivingLessonId)
+        public async Task<IList<DrivingLesson>> GetByIdAsync()
         {
             IdentityUser<int> currentUser = await _contextService.GetCurrentUserAsync();
-            return await _drivingLessonsRepository.GetByIdAsync(drivingLessonId, currentUser.Id);
+            return await _drivingLessonsRepository.GetByIdAsync(currentUser.Id);
         }
 
         public async Task<int> CreateDrivingLessonByInstructor(CreateDrivingLesson instructorRequest)

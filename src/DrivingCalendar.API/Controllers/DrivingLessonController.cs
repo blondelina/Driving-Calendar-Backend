@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.ComponentModel.DataAnnotations;
 using DrivingCalendar.API.Models;
 using DrivingCalendar.Business.Constants;
+using System.Collections.Generic;
 
 namespace DrivingCalendar.API.Controllers
 {
@@ -21,13 +22,12 @@ namespace DrivingCalendar.API.Controllers
             _drivingLessonService = drivingLessonService;
         }
 
-        // GET: api/<ValuesController>
-        [HttpGet("driving-lessons/{drivingLessonId}")]
-
-        public async Task<ActionResult<DrivingLesson>> GetById([FromRoute] int drivingLessonId)
+        [HttpGet("driving-lessons")]
+        [Authorize(Roles = IdentityRoles.INSTRUCTOR+","+IdentityRoles.STUDENT)]
+        public async Task<IList<DrivingLesson>> GetById()
         {
-            DrivingLesson drivingLesson = await _drivingLessonService.GetByIdAsync(drivingLessonId);
-            return drivingLesson is not null ? drivingLesson : NotFound();
+            IList<DrivingLesson> drivingLessons = await _drivingLessonService.GetByIdAsync();
+            return drivingLessons;
         }
 
         [HttpPost("instructors/{instructorId}/driving-lessons")]
