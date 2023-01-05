@@ -9,6 +9,7 @@ namespace DrivingCalendar.Business.Abstractions.Repositories
         Task<IList<Student>> GetInstructorStudents(int instructorId);
 
         Task<int> AddStudent(int studentId, int instructorId);
+        Task<bool> DeleteStudent(int studentId, int instructorId);
 
     }
 }

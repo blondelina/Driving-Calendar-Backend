@@ -11,5 +11,7 @@ namespace DrivingCalendar.Business.Abstractions.Services
     {
         Task<int> AddStudentToInstructor(int studentId, int instructorId);
         Task<IList<Student>> GetStudents(int instructorId);
+        Task<bool> DeletetStudentsFromInstrutor(int studentId, int instructorId);
+
     }
 }

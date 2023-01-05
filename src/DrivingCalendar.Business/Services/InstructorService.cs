@@ -73,5 +73,28 @@ namespace DrivingCalendar.Business.Services
             return await _instructorRepository.GetInstructorStudents(instructorId);
 
         }
-    }
+        public async Task<bool> DeletetStudentsFromInstrutor(int studentId, int instructorId)
+        {
+            IdentityUser<int> currentUser = await _contextService.GetCurrentUserAsync();
+            if (currentUser.Id != instructorId)
+            {
+                throw new UserNotAllowedException();
+            }
+
+            IdentityUser<int> instructor = await _userManager.FindByIdAsync(instructorId.ToString());
+            if (instructor == null)
+            {
+                throw new InstructortNotFoundException();
+            }
+
+            IdentityUser<int> student = await _userManager.FindByIdAsync(studentId.ToString());
+            if (student == null)
+            {
+                throw new StudentNotFoundException();
+            }
+            return await _instructorRepository.DeleteStudent(studentId, instructorId);
+       
+        }
+
+}
 }
