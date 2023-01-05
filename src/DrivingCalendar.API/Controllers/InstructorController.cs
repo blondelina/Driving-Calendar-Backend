@@ -45,5 +45,13 @@ namespace DrivingCalendar.API.Controllers
   
             return response;
         }
+
+        [HttpDelete("{instructorId}/students/{studentId}")]
+        [Authorize(Roles = IdentityRoles.INSTRUCTOR)]
+        public async Task<IActionResult> DeleteStudentFromInstructor([FromRoute][Required] int instructorId, [FromRoute] int studentId)
+        {
+            return new ObjectResult(await _instructorService.DeletetStudentsFromInstrutor(studentId, instructorId));
+        }
+
     }
 }
