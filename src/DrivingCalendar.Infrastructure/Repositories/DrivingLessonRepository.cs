@@ -2,6 +2,7 @@
 using DrivingCalendar.Business.Models;
 using DrivingCalendar.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -17,35 +18,31 @@ namespace DrivingCalendar.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<DrivingLesson> GetByIdAsync(int drivingLessonId, int userId)
+
+        public async Task<IList<DrivingLesson>> GetByIdAsync(int userId)
         {
             return await _context.DrivingLessons.Where(dl => 
-                    dl.Id == drivingLessonId 
-                    && (dl.StudentInstructorEntity.InstructorId == userId || dl.StudentInstructorEntity.StudentId == userId))
+                    dl.StudentInstructorEntity.InstructorId == userId || dl.StudentInstructorEntity.StudentId == userId)
                 .Select(e => new DrivingLesson
                 {
                     Id = e.Id,
                     InstructorId = e.StudentInstructorEntity.InstructorId,
                     StudentId = e.StudentInstructorEntity.StudentId,
+                    StudentName = e.StudentInstructorEntity.Student.FirstName+" "+e.StudentInstructorEntity.Student.LastName,
+                    InstructorName = e.StudentInstructorEntity.Instructor.FirstName+" "+e.StudentInstructorEntity.Instructor.LastName,
                     StartDate = e.StartDate,
                     EndDate = e.EndDate,
                     StudentStatus = e.StudentStatus,
                     InstructorStatus = e.InstructorStatus
                 })
-                .FirstOrDefaultAsync();
+                .ToListAsync();
         }
 
         public async Task<int> CreateDrivingLesson(CreateDrivingLesson createDrivingLesson)
         {
-
-            StudentInstructorEntity studentInstructorEntity = new()
-            {
-                InstructorId = createDrivingLesson.InstructorId,
-                StudentId = createDrivingLesson.StudentId,
-                Student = await _context.Students.FindAsync (createDrivingLesson.StudentId),
-                Instructor = await _context.Instructors.FindAsync(createDrivingLesson.InstructorId)
-            };
-            _context.Add(studentInstructorEntity);
+            StudentInstructorEntity studentInstructorEntity = _context.StudentInstructors.Where(dl =>
+            dl.InstructorId == createDrivingLesson.InstructorId && dl.StudentId == createDrivingLesson.StudentId)
+            .FirstOrDefault();
 
             DrivingLessonEntity drivingLesson = new()
             {
