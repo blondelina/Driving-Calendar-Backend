@@ -9,7 +9,6 @@ namespace DrivingCalendar.Business.Models
         public int StudentId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public DrivingLessonStatus StudentStatus { get; set; }
-        public DrivingLessonStatus InstructorStatus { get; set; }
+        public DrivingLessonStatus Status { get; set; }
     }
 }

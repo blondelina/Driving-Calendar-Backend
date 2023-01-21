@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using DrivingCalendar.Business;
 using Microsoft.AspNetCore.Identity;
 using DrivingCalendar.Business.Configuration;
+using Newtonsoft.Json.Converters;
 
 namespace DrivingCalendar.API.Host
 {
@@ -28,6 +29,9 @@ namespace DrivingCalendar.API.Host
             services.AddControllers(options =>
             {
                 options.Filters.Add<HttpResponseExceptionFilter>();
+            }).AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.Converters.Add(new StringEnumConverter());
             });
 
             services.AddEndpointsApiExplorer();

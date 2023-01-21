@@ -18,14 +18,9 @@ namespace DrivingCalendar.Business.Services
             _studentsRepository = studentsRepository;
         }
 
-        public async Task<IList<Student>> GetStudents()
+        public async Task<IList<Student>> GetStudents(StudentsFilter filter)
         {
-            return await _studentsRepository.GetStudents();
-        }
-
-        public async Task<IList<Student>> GetStudentsNotAssignedToInstructors(IList<int> instructorIds)
-        {
-            return await _studentsRepository.GetStudentsNotAssignedToInstructor(instructorIds);
+            return await _studentsRepository.GetStudents(filter);
         }
     }
 }

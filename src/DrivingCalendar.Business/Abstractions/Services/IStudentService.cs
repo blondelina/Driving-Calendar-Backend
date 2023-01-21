@@ -7,8 +7,6 @@ namespace DrivingCalendar.Business.Abstractions.Services
 {
     public interface IStudentService
     {
-        Task<IList<Student>> GetStudents();
-
-        Task<IList<Student>> GetStudentsNotAssignedToInstructors(IList<int> instructorIds);
+        Task<IList<Student>> GetStudents(StudentsFilter filter);
     }
 }

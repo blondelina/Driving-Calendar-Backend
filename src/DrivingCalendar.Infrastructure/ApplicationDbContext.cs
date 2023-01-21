@@ -51,9 +51,14 @@ namespace DrivingCalendar.Infrastructure
            
             modelBuilder.Entity<DrivingLessonEntity>(builder =>
             {
-                builder.HasOne(dl => dl.StudentInstructorEntity)
+                builder.HasOne(dl => dl.Student)
                     .WithMany()
-                    .HasForeignKey(dl => dl.StudentInstructorId)
+                    .HasForeignKey(dl => dl.StudentId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                builder.HasOne(dl => dl.Instructor)
+                    .WithMany()
+                    .HasForeignKey(dl => dl.InstructorId)
                     .OnDelete(DeleteBehavior.NoAction);
             });
 

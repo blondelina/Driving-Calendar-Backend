@@ -1,6 +1,9 @@
 ﻿using DrivingCalendar.Business.Abstractions.Repositories;
+using DrivingCalendar.Business.Constants;
 using DrivingCalendar.Business.Models;
+using DrivingCalendar.Business.Models.Filters;
 using DrivingCalendar.Infrastructure.Entities;
+using DrivingCalendar.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,45 +22,54 @@ namespace DrivingCalendar.Infrastructure.Repositories
         }
 
 
-        public async Task<IList<DrivingLesson>> GetByIdAsync(int userId)
+        public async Task<IList<DrivingLesson>> GetDrivingLessonsAsync(DrivingLessonFilter filter)
         {
-            return await _context.DrivingLessons.Where(dl => 
-                    dl.StudentInstructorEntity.InstructorId == userId || dl.StudentInstructorEntity.StudentId == userId)
-                .Select(e => new DrivingLesson
-                {
-                    Id = e.Id,
-                    InstructorId = e.StudentInstructorEntity.InstructorId,
-                    StudentId = e.StudentInstructorEntity.StudentId,
-                    StudentName = e.StudentInstructorEntity.Student.FirstName+" "+e.StudentInstructorEntity.Student.LastName,
-                    InstructorName = e.StudentInstructorEntity.Instructor.FirstName+" "+e.StudentInstructorEntity.Instructor.LastName,
-                    StartDate = e.StartDate,
-                    EndDate = e.EndDate,
-                    StudentStatus = e.StudentStatus,
-                    InstructorStatus = e.InstructorStatus
-                })
-                .ToListAsync();
+            return await _context.DrivingLessons
+                                 .ApplyFiltering(filter)
+                                 .Include(dl => dl.Student)
+                                 .Include(dl => dl.Instructor)
+                                 .Select(dl => dl.ToDrivingLesson())
+                                 .ToListAsync();
         }
 
-        public async Task<int> CreateDrivingLesson(CreateDrivingLesson createDrivingLesson)
+        public async Task<DrivingLesson> CreateDrivingLesson(CreateDrivingLesson createDrivingLesson)
         {
-            StudentInstructorEntity studentInstructorEntity = _context.StudentInstructors.Where(dl =>
-            dl.InstructorId == createDrivingLesson.InstructorId && dl.StudentId == createDrivingLesson.StudentId)
-            .FirstOrDefault();
-
             DrivingLessonEntity drivingLesson = new()
             {
-                StudentInstructorId = studentInstructorEntity.Id,
-                StudentInstructorEntity= studentInstructorEntity,
+                InstructorId = createDrivingLesson.InstructorId,
+                StudentId = createDrivingLesson.StudentId,
                 StartDate = createDrivingLesson.StartDate,
                 EndDate = createDrivingLesson.EndDate,
-                StudentStatus = createDrivingLesson.StudentStatus,
-                InstructorStatus = createDrivingLesson.InstructorStatus,
+                Status = createDrivingLesson.Status
             };
 
             _context.Add(drivingLesson);
             await _context.SaveChangesAsync();
 
-            return (drivingLesson.Id);
+            return drivingLesson.ToDrivingLesson();
+        }
+
+        public async Task UpdateDrivingLessonStatusAsync(int drivingLessonId, DrivingLessonStatus status)
+        {
+            DrivingLessonEntity drivingLesson = await _context.DrivingLessons
+                                                              .FirstOrDefaultAsync(dl => dl.Id == drivingLessonId);
+            if(drivingLesson is null)
+            {
+                return;
+            }
+
+            drivingLesson.Status = status;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteDrivingLessonAsync(int drivingLessonId)
+        {
+            DrivingLessonEntity drivingLesson = await _context.DrivingLessons.FirstOrDefaultAsync(dl => dl.Id == drivingLessonId);
+            if(drivingLesson is not null)
+            {
+                _context.Remove(drivingLesson);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

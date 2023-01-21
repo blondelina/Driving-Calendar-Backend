@@ -7,6 +7,7 @@ using DrivingCalendar.API.Models;
 using DrivingCalendar.Business.Constants;
 using System.Collections.Generic;
 using System.Linq;
+using DrivingCalendar.Business.Models.Filters;
 
 namespace DrivingCalendar.API.Controllers
 {
@@ -24,23 +25,24 @@ namespace DrivingCalendar.API.Controllers
 
         [HttpGet("students")]
         [Authorize(Roles = IdentityRoles.INSTRUCTOR)]
-        public async Task<IList<StudentResponse>> GetStudents([FromQuery] int[] notAssignedToInstructors)
+        public async Task<IList<StudentResponse>> GetStudents(
+            [FromQuery] int[] notAssignedToInstructors, 
+            [FromQuery] string searchString)
         {
-            IList<Student> students;
-            if (notAssignedToInstructors?.Any() ?? false)
+
+            StudentsFilter filter = new()
             {
-                students = await _studentService.GetStudentsNotAssignedToInstructors(notAssignedToInstructors);
-            }
-            else
-            {
-                students = await _studentService.GetStudents();
-            }
+                SearchString = searchString,
+                NotAssignedToInstructorIds = notAssignedToInstructors
+            };
+            IList<Student> students = await _studentService.GetStudents(filter);
 
             IList<StudentResponse> response = students.Select(s => new StudentResponse
             {
                 Id = s.Id,
                 Username = s.UserName,
-                Name = $"{s.FirstName} {s.LastName}"
+                Name = $"{s.FirstName} {s.LastName}",
+                Email = s.Email,
             }).ToList();
 
             return response;

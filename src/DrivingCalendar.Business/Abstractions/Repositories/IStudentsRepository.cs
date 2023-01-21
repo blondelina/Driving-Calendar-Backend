@@ -8,8 +8,6 @@ namespace DrivingCalendar.Business.Abstractions.Repositories
     public interface IStudentsRepository
     {
         Task<IList<Instructor>> GetStudentInstructors(int studentId);
-        Task<IList<Student>> GetStudents();
-
-        Task<IList<Student>> GetStudentsNotAssignedToInstructor(IList<int> instructorIds);
+        Task<IList<Student>> GetStudents(StudentsFilter filter);
     }
 }

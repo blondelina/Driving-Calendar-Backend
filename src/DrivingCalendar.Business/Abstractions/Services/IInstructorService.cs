@@ -10,7 +10,7 @@ namespace DrivingCalendar.Business.Abstractions.Services
     public interface IInstructorService 
     {
         Task<int> AddStudentToInstructor(int studentId, int instructorId);
-        Task<IList<Student>> GetStudents(int instructorId);
+        Task<IList<Student>> GetStudents(int instructorId, string searchString);
         Task<bool> DeletetStudentsFromInstrutor(int studentId, int instructorId);
 
     }

@@ -33,9 +33,11 @@ namespace DrivingCalendar.API.Controllers
 
         [HttpGet("{instructorId}/students")]
         [Authorize(Roles = IdentityRoles.INSTRUCTOR)]
-        public async Task<IList<StudentResponse>> GetStudentsFromInstructors([FromRoute][Required] int instructorId)
+        public async Task<IList<StudentResponse>> GetStudentsFromInstructors(
+            [FromRoute][Required] int instructorId,
+            [FromQuery] string searchString)
         {
-            IList<Student> students = await _instructorService.GetStudents(instructorId);
+            IList<Student> students = await _instructorService.GetStudents(instructorId, searchString);
             IList<StudentResponse> response = students.Select(s => new StudentResponse
             {
                 Id = s.Id,

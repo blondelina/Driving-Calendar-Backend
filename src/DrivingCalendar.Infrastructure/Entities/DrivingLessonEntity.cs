@@ -13,16 +13,17 @@ namespace DrivingCalendar.Infrastructure.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public int StudentInstructorId { get; set; }
 
-        public StudentInstructorEntity StudentInstructorEntity{ get; set; }
+        public int StudentId { get; set; }
+        public Student Student { get; set; }
+
+        public int InstructorId { get; set; }
+        public Instructor Instructor { get; set; }
 
         public DateTime StartDate { get; set; }
 
         public DateTime EndDate { get; set; }
 
-        public DrivingLessonStatus StudentStatus { get; set; }
-
-        public DrivingLessonStatus InstructorStatus { get; set; }
+        public DrivingLessonStatus Status { get; set; }
     }
 }

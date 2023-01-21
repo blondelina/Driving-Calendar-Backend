@@ -7,6 +7,8 @@ using System.ComponentModel.DataAnnotations;
 using DrivingCalendar.API.Models;
 using DrivingCalendar.Business.Constants;
 using System.Collections.Generic;
+using System;
+using DrivingCalendar.Business.Models.Filters;
 
 namespace DrivingCalendar.API.Controllers
 {
@@ -22,11 +24,14 @@ namespace DrivingCalendar.API.Controllers
             _drivingLessonService = drivingLessonService;
         }
 
-        [HttpGet("driving-lessons")]
-        [Authorize(Roles = IdentityRoles.INSTRUCTOR+","+IdentityRoles.STUDENT)]
-        public async Task<IList<DrivingLesson>> GetById()
+        [HttpGet("instructors/{instructorId}/driving-lessons")]
+        [Authorize(Roles = $"{IdentityRoles.INSTRUCTOR},{IdentityRoles.STUDENT}")]
+        public async Task<IList<DrivingLesson>> GetDrivingLessons(
+            [FromRoute][Required] int instructorId, 
+            [FromQuery] DateTime? startDate, 
+            [FromQuery] DateTime? endDate)
         {
-            IList<DrivingLesson> drivingLessons = await _drivingLessonService.GetByIdAsync();
+            IList<DrivingLesson> drivingLessons = await _drivingLessonService.GetInstructorDrivingLessonsAsync(instructorId, startDate, endDate);
             return drivingLessons;
         }
 
@@ -40,10 +45,17 @@ namespace DrivingCalendar.API.Controllers
                 InstructorId = instructorId,
                 StartDate = instructorRequest.StartDate,
                 EndDate = instructorRequest.EndDate,
-
             };
-            return new ObjectResult(await _drivingLessonService.CreateDrivingLessonByInstructor(createDrivingLesson));
 
+            return new ObjectResult(await _drivingLessonService.CreateDrivingLessonByInstructor(createDrivingLesson));
+        }
+
+        [HttpDelete("driving-lessons/{drivingLessonId}")]
+        [Authorize(Roles = IdentityRoles.INSTRUCTOR)]
+        public async Task<IActionResult> DeleteDrivingLesson([FromRoute][Required] int drivingLessonId)
+        {
+            await _drivingLessonService.DeleteDrivingLessonAsync(drivingLessonId);
+            return NoContent();
         }
     }
 }

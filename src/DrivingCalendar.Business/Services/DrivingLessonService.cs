@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 using DrivingCalendar.Business.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using System.Net;
+using DrivingCalendar.Business.Models.Filters;
+using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace DrivingCalendar.Business.Services
 {
@@ -16,57 +19,83 @@ namespace DrivingCalendar.Business.Services
         private readonly IDrivingLessonsRepository _drivingLessonsRepository;
         private readonly IContextService _contextService;
         private readonly IInstructorRepository _instructorRepository;
-        private readonly UserManager<IdentityUser<int>> _userManager;
+        private readonly UserManager<Instructor> _instructorManager;
 
         public DrivingLessonService(
             IDrivingLessonsRepository drivingLessonsRepository, 
             IContextService contextService,
-            IInstructorRepository instructorRepository, UserManager<IdentityUser<int>> userManager)
+            IInstructorRepository instructorRepository, 
+            UserManager<Instructor> instructorManager)
         {
             _drivingLessonsRepository = drivingLessonsRepository;
             _contextService = contextService;
             _instructorRepository = instructorRepository;
-            _userManager = userManager;
+            _instructorManager = instructorManager;
         }
 
-        public async Task<IList<DrivingLesson>> GetByIdAsync()
+        public async Task<IList<DrivingLesson>> GetInstructorDrivingLessonsAsync(int instructorId, DateTime? startDate, DateTime? endDate)
         {
             IdentityUser<int> currentUser = await _contextService.GetCurrentUserAsync();
-            return await _drivingLessonsRepository.GetByIdAsync(currentUser.Id);
-        }
-
-        public async Task<int> CreateDrivingLessonByInstructor(CreateDrivingLesson instructorRequest)
-        {
-            IdentityUser<int> currentUser = await _contextService.GetCurrentUserAsync();
-            if (currentUser.Id != instructorRequest.InstructorId)
+            if(currentUser.Id != instructorId)
             {
                 throw new UserNotAllowedException();
             }
 
-            IdentityUser<int> instructor = await _userManager.FindByIdAsync(currentUser.Id.ToString());
+            DrivingLessonFilter filter = new()
+            {
+                InstructorId = instructorId,
+                StartDate = startDate,
+                EndDate = endDate
+            };
+            return await _drivingLessonsRepository.GetDrivingLessonsAsync(filter);
+        }
+
+        public async Task<DrivingLesson> CreateDrivingLessonByInstructor(CreateDrivingLesson createDrivingLesson)
+        {
+            IdentityUser<int> currentUser = await _contextService.GetCurrentUserAsync();
+            if (currentUser.Id != createDrivingLesson.InstructorId)
+            {
+                throw new UserNotAllowedException();
+            }
+
+            IdentityUser<int> instructor = await _instructorManager.FindByIdAsync(currentUser.Id.ToString());
             if (instructor == null)
             {
-                throw new InstructortNotFoundException();
+                throw new InstructorNotFoundException();
             }
 
-            IdentityUser<int> student = await _userManager.FindByIdAsync(instructorRequest.StudentId.ToString());
-            if (student == null)
+            IList<Student> instructorStudents = await _instructorRepository.GetInstructorStudents(createDrivingLesson.InstructorId);
+            if (!instructorStudents.Any(s => s.Id == createDrivingLesson.StudentId))
             {
-                throw new StudentNotFoundException();
+                throw new StudentNotLinkedToInstructorException();
             }
 
-            IList<Student> instructorStudentIds =
-                await _instructorRepository.GetInstructorStudents(instructorRequest.InstructorId);
-            if (instructorStudentIds.All(s => s.Id != instructorRequest.StudentId))
+
+            createDrivingLesson.Status = DrivingLessonStatus.Pending; 
+
+             return await _drivingLessonsRepository.CreateDrivingLesson(createDrivingLesson);
+        }
+
+        public async Task DeleteDrivingLessonAsync(int drivingLessonId)
+        {
+            DrivingLessonFilter filter = new()
             {
-                throw new StudentNotFoundException();
+                DrivingLessonIds = new List<int> { drivingLessonId }
+            };
+            DrivingLesson drivingLesson = (await _drivingLessonsRepository.GetDrivingLessonsAsync(filter)).FirstOrDefault();
+
+            if(drivingLesson is null)
+            {
+                throw new DrivingLessonNotFoundException();
             }
 
+            IdentityUser<int> currentUser = await _contextService.GetCurrentUserAsync();
+            if(currentUser.Id != drivingLesson.InstructorId)
+            {
+                throw new UserNotAllowedException();
+            }
 
-            instructorRequest.InstructorStatus = DrivingLessonStatus.Confirmed;
-            instructorRequest.StudentStatus = DrivingLessonStatus.Pending;
-
-             return await _drivingLessonsRepository.CreateDrivingLesson(instructorRequest);
+            await _drivingLessonsRepository.DeleteDrivingLessonAsync(drivingLessonId);
         }
     }
 }
