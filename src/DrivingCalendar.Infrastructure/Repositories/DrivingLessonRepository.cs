@@ -28,6 +28,7 @@ namespace DrivingCalendar.Infrastructure.Repositories
                                  .ApplyFiltering(filter)
                                  .Include(dl => dl.Student)
                                  .Include(dl => dl.Instructor)
+                                    .ThenInclude(i => i.Company)
                                  .Select(dl => dl.ToDrivingLesson())
                                  .ToListAsync();
         }
@@ -45,6 +46,12 @@ namespace DrivingCalendar.Infrastructure.Repositories
 
             _context.Add(drivingLesson);
             await _context.SaveChangesAsync();
+
+            drivingLesson = _context.DrivingLessons
+                                    .Include(dl => dl.Instructor)
+                                        .ThenInclude(i => i.Company)
+                                    .Include(dl => dl.Student)
+                                    .FirstOrDefault(dl => dl.Id == drivingLesson.Id);
 
             return drivingLesson.ToDrivingLesson();
         }

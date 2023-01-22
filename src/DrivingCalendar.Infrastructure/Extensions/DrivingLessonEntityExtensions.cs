@@ -14,6 +14,11 @@ namespace DrivingCalendar.Infrastructure.Extensions
                 return query;
             }
 
+            if(filter.DrivingLessonIds != null && filter.DrivingLessonIds.Any())
+            {
+                query = query.Where(dl => filter.DrivingLessonIds.Contains(dl.Id));
+            }
+
             if(filter.StartDate.HasValue)
             {
                 query = query.Where(dl => dl.StartDate >= filter.StartDate);
@@ -48,10 +53,8 @@ namespace DrivingCalendar.Infrastructure.Extensions
             return new DrivingLesson
             {
                 Id = drivingLessonEntity.Id,
-                InstructorId = drivingLessonEntity.Instructor.Id,
-                StudentId = drivingLessonEntity.Student.Id,
-                StudentName = drivingLessonEntity.Student.FirstName + " " + drivingLessonEntity.Student.LastName,
-                InstructorName = drivingLessonEntity.Instructor.FirstName + " " + drivingLessonEntity.Instructor.LastName,
+                Instructor = drivingLessonEntity.Instructor,
+                Student = drivingLessonEntity.Student,
                 StartDate = drivingLessonEntity.StartDate,
                 EndDate = drivingLessonEntity.EndDate,
                 Status = drivingLessonEntity.Status

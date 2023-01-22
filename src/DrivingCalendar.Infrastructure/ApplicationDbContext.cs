@@ -23,8 +23,18 @@ namespace DrivingCalendar.Infrastructure
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Company>().ToTable("Companies");
-            modelBuilder.Entity<Student>().ToTable("Students");
-            modelBuilder.Entity<Instructor>().ToTable("Instructors");
+
+            modelBuilder.Entity<Student>(builder =>
+            {
+                builder.ToTable("Students");
+                builder.Ignore(s => s.FullName);
+            });
+
+            modelBuilder.Entity<Instructor>(builder =>
+            {
+                builder.ToTable("Instructors");
+                builder.Ignore(i => i.FullName);
+            });
 
             modelBuilder.Entity<Instructor>(builder =>
             {
@@ -33,6 +43,7 @@ namespace DrivingCalendar.Infrastructure
                     .HasForeignKey(i => i.CompanyId)
                     .OnDelete(DeleteBehavior.NoAction);
             });
+
             modelBuilder.Entity<StudentInstructorEntity>(builder =>
             {
                 builder.HasIndex(si => new { si.StudentId, si.InstructorId })

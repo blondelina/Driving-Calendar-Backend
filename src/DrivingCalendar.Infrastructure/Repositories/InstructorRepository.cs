@@ -41,9 +41,11 @@ namespace DrivingCalendar.Infrastructure.Repositories
 
         public async Task<bool> DeleteStudent(int studentId, int instructorId)
         {
-            StudentInstructorEntity entityToDelete= _dbContext.StudentInstructors.Where(si => si.InstructorId == instructorId && si.StudentId == studentId).FirstOrDefault();
+            StudentInstructorEntity entityToDelete= _dbContext.StudentInstructors
+                                      .Where(si => si.InstructorId == instructorId && si.StudentId == studentId)
+                                      .FirstOrDefault();
 
-            if(entityToDelete==null)
+            if(entityToDelete == null)
                 return false;
 
             _dbContext.StudentInstructors.Remove(entityToDelete);

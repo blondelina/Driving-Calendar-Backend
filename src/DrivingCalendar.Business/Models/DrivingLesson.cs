@@ -7,13 +7,9 @@ namespace DrivingCalendar.Business.Models
     {
         public int Id { get; set; }
 
-        public int InstructorId { get; set; }
+        public Instructor Instructor { get; set; }
 
-        public int StudentId { get; set; }
-
-        public string StudentName { get; set; }
-
-        public string InstructorName { get; set; }
+        public Student Student { get; set; }
 
         public DateTime StartDate { get; set; }
 

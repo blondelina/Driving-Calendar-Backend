@@ -50,6 +50,22 @@ namespace DrivingCalendar.Business.Services
             return await _drivingLessonsRepository.GetDrivingLessonsAsync(filter);
         }
 
+        public async Task<IList<DrivingLesson>> GetStudentDrivingLessonsAsync(int studentId, DrivingLessonStatus? status)
+        {
+            IdentityUser<int> currentUser = await _contextService.GetCurrentUserAsync();
+            if (currentUser.Id != studentId)
+            {
+                throw new UserNotAllowedException();
+            }
+
+            DrivingLessonFilter filter = new()
+            {
+                StudentId = studentId,
+                Status = status
+            };
+            return await _drivingLessonsRepository.GetDrivingLessonsAsync(filter);
+        }
+
         public async Task<DrivingLesson> CreateDrivingLessonByInstructor(CreateDrivingLesson createDrivingLesson)
         {
             IdentityUser<int> currentUser = await _contextService.GetCurrentUserAsync();
@@ -76,6 +92,29 @@ namespace DrivingCalendar.Business.Services
              return await _drivingLessonsRepository.CreateDrivingLesson(createDrivingLesson);
         }
 
+        public async Task PatchDrivingLessonStatus(int drivingLessonId, DrivingLessonStatus status)
+        {
+            IdentityUser<int> currentUser = await _contextService.GetCurrentUserAsync();
+
+            DrivingLessonFilter filter = new()
+            {
+                DrivingLessonIds = new[] { drivingLessonId }
+            };
+            DrivingLesson drivingLesson = (await _drivingLessonsRepository.GetDrivingLessonsAsync(filter)).FirstOrDefault();
+
+            if(drivingLesson is null)
+            {
+                throw new DrivingLessonNotFoundException();
+            }
+
+            if(drivingLesson.Student.Id != currentUser.Id)
+            {
+                throw new UserNotAllowedException();
+            }
+
+            await _drivingLessonsRepository.UpdateDrivingLessonStatusAsync(drivingLessonId, status);
+        }
+
         public async Task DeleteDrivingLessonAsync(int drivingLessonId)
         {
             DrivingLessonFilter filter = new()
@@ -90,7 +129,7 @@ namespace DrivingCalendar.Business.Services
             }
 
             IdentityUser<int> currentUser = await _contextService.GetCurrentUserAsync();
-            if(currentUser.Id != drivingLesson.InstructorId)
+            if(currentUser.Id != drivingLesson.Instructor.Id)
             {
                 throw new UserNotAllowedException();
             }

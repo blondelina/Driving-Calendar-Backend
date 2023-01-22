@@ -9,6 +9,8 @@ using DrivingCalendar.Business.Constants;
 using System.Collections.Generic;
 using System;
 using DrivingCalendar.Business.Models.Filters;
+using System.Linq;
+using DrivingCalendar.API.Extensions;
 
 namespace DrivingCalendar.API.Controllers
 {
@@ -25,14 +27,24 @@ namespace DrivingCalendar.API.Controllers
         }
 
         [HttpGet("instructors/{instructorId}/driving-lessons")]
-        [Authorize(Roles = $"{IdentityRoles.INSTRUCTOR},{IdentityRoles.STUDENT}")]
-        public async Task<IList<DrivingLesson>> GetDrivingLessons(
+        [Authorize(Roles = IdentityRoles.INSTRUCTOR)]
+        public async Task<IEnumerable<DrivingLessonResponse>> GetInstructorDrivingLessons(
             [FromRoute][Required] int instructorId, 
             [FromQuery] DateTime? startDate, 
             [FromQuery] DateTime? endDate)
         {
             IList<DrivingLesson> drivingLessons = await _drivingLessonService.GetInstructorDrivingLessonsAsync(instructorId, startDate, endDate);
-            return drivingLessons;
+            return drivingLessons.Select(dl => dl.ToResponse());
+        }
+
+        [HttpGet("students/{studentId}/driving-lessons")]
+        [Authorize(Roles = IdentityRoles.STUDENT)]
+        public async Task<IEnumerable<DrivingLessonResponse>> GetStudentDrivingLessons(
+            [FromRoute][Required] int studentId,
+            [FromQuery] DrivingLessonStatus? status)
+        {
+            IList<DrivingLesson> drivingLessons = await _drivingLessonService.GetStudentDrivingLessonsAsync(studentId, status);
+            return drivingLessons.Select(dl => dl.ToResponse());
         }
 
         [HttpPost("instructors/{instructorId}/driving-lessons")]
@@ -47,7 +59,18 @@ namespace DrivingCalendar.API.Controllers
                 EndDate = instructorRequest.EndDate,
             };
 
-            return new ObjectResult(await _drivingLessonService.CreateDrivingLessonByInstructor(createDrivingLesson));
+            DrivingLesson createdDrivingLesson = await _drivingLessonService.CreateDrivingLessonByInstructor(createDrivingLesson);
+            return Created("", createdDrivingLesson.ToResponse());
+        }
+
+        [HttpPatch("driving-lessons/{drivingLessonId}")]
+        [Authorize(Roles = IdentityRoles.STUDENT)]
+        public async Task<IActionResult> PatchDrivingLessonStatus(
+            [FromRoute][Required] int drivingLessonId,
+            [FromBody][Required] PatchDrivingLessonStatusRequest patchRequest)
+        {
+            await _drivingLessonService.PatchDrivingLessonStatus(drivingLessonId, patchRequest.Status.Value);
+            return NoContent();
         }
 
         [HttpDelete("driving-lessons/{drivingLessonId}")]

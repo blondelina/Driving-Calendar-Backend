@@ -8,5 +8,10 @@ namespace DrivingCalendar.Business.Models
         public string LastName { get; set; }
         public int CompanyId { get; set; }
         public Company Company { get; set; }
+
+        public string FullName 
+        { 
+            get { return $"{FirstName} {LastName}"; }
+        }
     }
 }

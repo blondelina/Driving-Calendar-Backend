@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DrivingCalendar.Business.Abstractions.Repositories;
 using DrivingCalendar.Business.Models;
+using DrivingCalendar.Business.Models.Filters;
 using DrivingCalendar.Infrastructure.Entities;
+using DrivingCalendar.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace DrivingCalendar.Infrastructure.Repositories
@@ -25,16 +28,26 @@ namespace DrivingCalendar.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IList<Student>> GetStudents()
-        {
-            return await _dbContext.Students.ToListAsync();
-        }
-
-        public async Task<IList<Student>> GetStudentsNotAssignedToInstructor(IList<int> instructorIds)
+        public async Task<IList<Student>> GetStudents(StudentsFilter filter)
         {
             return await _dbContext.Students
-                                   .Where(s => !_dbContext.StudentInstructors.Any(si => instructorIds.Contains(si.InstructorId) && si.StudentId == s.Id))
+                                   .ApplyFiltering(filter, _dbContext)
                                    .ToListAsync();
+        }
+
+        public async Task UpdateStudentExamDateAsync(int studentId, DateTime? examDate)
+        {
+            Student student = await _dbContext.Students
+                                              .Where(s => s.Id == studentId)
+                                              .FirstOrDefaultAsync();
+
+            if(student == null)
+            {
+                return;
+            }
+
+            student.ExamDate = examDate;
+            await _dbContext.SaveChangesAsync();
         }
     }
 }
